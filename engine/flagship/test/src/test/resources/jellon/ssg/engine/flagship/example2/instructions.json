@@ -1,0 +1,10 @@
+{
+  "scope": {
+    "st4": {
+      "stgroup": "mvn.stg",
+      "template": "deps",
+      "using": "input",
+      "output": "auto-pom.xml"
+    }
+  }
+}

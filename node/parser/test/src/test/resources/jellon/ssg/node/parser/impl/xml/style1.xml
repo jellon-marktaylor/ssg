@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>My XML Example</title>
+    </head>
+    <body>
+        <img src="images/icon.png" alt="logo"/>
+        <ol>
+            <li value="3">li3</li>
+            <li>li4</li>
+            <li>li5</li>
+        </ol>
+    </body>
+</html>

@@ -1,0 +1,45 @@
+delimiters "`", "`"
+
+version(groupId, version) ::= "<version.`groupId`>`version`</version.`groupId`>"
+
+dependency(groupId, artifactId, version) ::= <<
+<dependency>
+    <groupId>`groupId`</groupId>
+    <artifactId>`artifactId`</artifactId>
+    `if(version)`<version>${version.`groupId`}</version>`endif`
+</dependency>
+>>
+
+dependency0(dep) ::= "`dependency(dep.groupId, dep.artifactId, dep.version)`"
+
+dependencyManagement(dep) ::= "`dep.artifacts:{artifactId | `dependency(dep.groupId, artifactId, true)`}; separator={`\n`}`"
+
+dependencies(dep) ::= "`dep.artifacts:{artifactId | `dependency(dep.groupId, artifactId, false)`}; separator={`\n`}`"
+
+deps(groupId, artifactId, version, dependencies) ::= <<
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>`groupId`</groupId>
+    <artifactId>`artifactId`</artifactId>
+    <version>`version`</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        `dependencies:{dep |`version(dep.groupId, dep.version)`}; separator={`\n`}`
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            `dependencies:{dep |`dependencyManagement(dep)`}; separator={`\n``\n`}`
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        `dependencies:{dep |`dependencies(dep)`}; separator={`\n``\n`}`
+    </dependencies>
+</project>
+
+>>

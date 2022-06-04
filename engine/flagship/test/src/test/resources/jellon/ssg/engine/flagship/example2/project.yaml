@@ -1,0 +1,13 @@
+groupId: jellon.example
+artifactId: example2
+version: 0.0.1-SNAPSHOT
+dependencies:
+  - version: 1.7.25
+    groupId: org.slf4j
+    artifacts: [ slf4j-api, slf4j-log4j12 ]
+  - version: 1.26
+    groupId: org.yaml
+    artifacts: snakeyaml
+  - version: 4.3.25.RELEASE
+    groupId: org.springframework
+    artifacts: [ spring-beans, spring-web, spring-webmvc ]

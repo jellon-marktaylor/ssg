@@ -1,0 +1,55 @@
+{
+  "booleanValue": true,
+  "numberValue": 2.1,
+  "stringValue": "foo",
+  "listNode": [
+    true,
+    2.1,
+    "foo",
+    [
+      true,
+      2.1,
+      "foo"
+    ],
+    [
+      false,
+      3,
+      "bar"
+    ],
+    {
+      "booleanValue": true,
+      "numberValue": 2.1,
+      "stringValue": "foo"
+    },
+    {
+      "booleanValue": false,
+      "numberValue": 3,
+      "stringValue": "bar"
+    }
+  ],
+  "mapNode": {
+    "booleanValue": true,
+    "numberValue": 2.1,
+    "stringValue": "foo",
+    "list1": [
+      true,
+      2.1,
+      "foo"
+    ],
+    "list2": [
+      false,
+      3,
+      "bar"
+    ],
+    "map1": {
+      "booleanValue": true,
+      "numberValue": 2.1,
+      "stringValue": "foo"
+    },
+    "map2": {
+      "booleanValue": false,
+      "numberValue": 3,
+      "stringValue": "bar"
+    }
+  }
+}

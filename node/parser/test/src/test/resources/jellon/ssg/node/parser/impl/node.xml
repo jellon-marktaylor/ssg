@@ -1,0 +1,51 @@
+<root>
+    <booleanValue>true</booleanValue>
+    <numberValue>2.1</numberValue>
+    <stringValue>foo</stringValue>
+    <listNode>true</listNode>
+    <listNode>2.1</listNode>
+    <listNode>foo</listNode>
+    <listNode>
+        <!-- there is no XML equivalent to a ListNode nested in a ListNode, so this is a MapNode nested in a ListNode -->
+        <elem>true</elem>
+        <elem>2.1</elem>
+        <elem>foo</elem>
+    </listNode>
+    <listNode>
+        <!-- there is no XML equivalent to a ListNode nested in a ListNode, so this is a MapNode nested in a ListNode -->
+        <elem>false</elem>
+        <elem>3</elem>
+        <elem>bar</elem>
+    </listNode>
+    <listNode>
+        <booleanValue>true</booleanValue>
+        <numberValue>2.1</numberValue>
+        <stringValue>foo</stringValue>
+    </listNode>
+    <listNode>
+        <booleanValue>false</booleanValue>
+        <numberValue>3</numberValue>
+        <stringValue>bar</stringValue>
+    </listNode>
+    <mapNode>
+        <booleanValue>true</booleanValue>
+        <numberValue>2.1</numberValue>
+        <stringValue>foo</stringValue>
+        <list1>true</list1>
+        <list1>2.1</list1>
+        <list1>foo</list1>
+        <list2>false</list2>
+        <list2>3</list2>
+        <list2>bar</list2>
+        <map1>
+            <booleanValue>true</booleanValue>
+            <numberValue>2.1</numberValue>
+            <stringValue>foo</stringValue>
+        </map1>
+        <map2>
+            <booleanValue>false</booleanValue>
+            <numberValue>3</numberValue>
+            <stringValue>bar</stringValue>
+        </map2>
+    </mapNode>
+</root>

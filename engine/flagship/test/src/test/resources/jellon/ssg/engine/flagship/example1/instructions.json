@@ -1,0 +1,19 @@
+{
+  "scope": {
+    "define": {
+      "internalStuff": {
+        "root": ".",
+        "path": "my/custom/path"
+      },
+      "myCustomDefs": {
+        "count": 1,
+        "foo": "bar"
+      }
+    },
+    "st4": {
+      "using": "myCustomDefs",
+      "template": "<count> = <foo>",
+      "output": "<internalStuff.root>/<internalStuff.path>/output.txt"
+    }
+  }
+}

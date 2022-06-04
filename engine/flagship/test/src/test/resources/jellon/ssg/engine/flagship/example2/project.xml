@@ -1,0 +1,19 @@
+<root>
+    <groupId>jellon.example</groupId>
+    <artifactId>example2</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <dependencies>
+        <slf4j groupId="org.slf4j" version="1.7.25">
+            <artifacts>slf4j-api</artifacts>
+            <artifacts>slf4j-log4j12</artifacts>
+        </slf4j>
+        <jdbi groupId="org.yaml" version="4.3.25.RELEASE" artifacts="snakeyaml"/>
+        <spring-beans>
+            <groupId>org.springframework</groupId>
+            <version>4.3.25.RELEASE</version>
+            <artifacts>spring-beans</artifacts>
+            <artifacts>spring-web</artifacts>
+            <artifacts>spring-webmvc</artifacts>
+        </spring-beans>
+    </dependencies>
+</root>
