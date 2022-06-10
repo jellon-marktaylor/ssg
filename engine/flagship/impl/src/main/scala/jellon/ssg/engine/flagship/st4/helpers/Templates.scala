@@ -37,14 +37,13 @@ object Templates {
             case valueNode: ValueNode =>
               valueNode.optValue.getOrElse(INode.empty)
             case listNode: ListNode =>
-              // to get ST4 to treat a list as a list, this object must implement java.lang.Iterable
-              listNode.elements.asJava
+              // INodeList implements java.util.Iterable and ST4 inherently treats Iterable uniquely
+              listNode.children
             case _ =>
               node
           }
           st1.add(arg, value)
-        }
-        catch {
+        } catch {
           case rte: RuntimeException =>
             throw new IOException("Undefined template parameter <" + arg + "> in: " + template.impl.template, rte)
         }
