@@ -33,9 +33,8 @@ object NodeModelAdapter extends ModelAdaptor[INode] {
     case node: ValueNode =>
       node.valueAs[AnyRef]
     case node: ListNode =>
-      node.children.toSeq.asJava
-//    case node: MapNode =>
-//      node.attributes.toMap.asJava
+      // INodeList implements java.util.Iterable and ST4 inherently treats Iterable uniquely
+      node.children
     case _ =>
       node
   }

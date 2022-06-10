@@ -49,7 +49,7 @@ object INodeList {
 
 }
 
-trait INodeList {
+trait INodeList extends java.lang.Iterable[INode] {
   def size: Int
 
   def optIndex(index: Int): Option[INode]
