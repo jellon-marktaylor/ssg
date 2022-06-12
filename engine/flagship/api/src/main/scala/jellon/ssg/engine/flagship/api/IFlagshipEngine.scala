@@ -3,46 +3,12 @@ package jellon.ssg.engine.flagship.api
 import jellon.ssg.engine.flagship.spi.IResolverFactory
 import jellon.ssg.io.spi.IResources
 import jellon.ssg.node.api.{INode, INodeMap}
-import jellon.ssg.node.spi.{Node, NodeMap}
 
 import java.io.{InputStream, OutputStream}
 
 object IFlagshipEngine {
-  val BASE_PATH: String = ""
-
-  val INSTRUCTIONS: String = "instructions"
-
-  val INPUT: String = "input"
-
-  val OUTPUT: String = "output"
-
-  def instructionsNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](INSTRUCTIONS -> value))
-
-  def inputNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](INPUT -> value))
-
-  def outputNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](OUTPUT -> value))
-
-  implicit class IFlagshipNodeMapExtensions(self: INodeMap) {
-    def instructions: INode = self(INSTRUCTIONS)
-
-    def input: INode = self(INPUT)
-
-    def output: INode = self(OUTPUT)
-  }
 
   implicit class IFlagshipEngineExtensions(self: IFlagshipEngine) {
-    def process(name: String, state: INode): INodeMap = self
-      .process(name, state.attributes)
-
-    def processInstructions(name: String, state: INodeMap, instructions: INode): INodeMap = self
-      .process(name, state.setAttribute(INSTRUCTIONS, instructions))
-
-    def processInstructions(name: String, state: INodeMap, instructions: INodeMap): INodeMap =
-      processInstructions(name, state, Node(instructions))
-
     def resolveNode(dictionary: INodeMap, rawText: String): INode =
       self.resolver.asNode(dictionary, rawText)
 
@@ -77,14 +43,20 @@ object IFlagshipEngine {
 }
 
 /**
- * [[NodeProcessorHandler]]
- *
- * @see jellon.ssg.engine.flagship.NodeProcessorHandler
+ * Usually used by [[jellon.ssg.engine.flagship.api.IFlagshipApplication]] to kick off an SSG application instance
  */
 trait IFlagshipEngine {
-  def process(name: String, state: INodeMap): INodeMap
+  def resources: IResources
 
   def resolver: IResolverFactory
 
-  def resources: IResources
+  /**
+   * This method has 2 primary use-cases:
+   * <br/>1) [[jellon.ssg.engine.flagship.api.IFlagshipApplication]] to kick off an SSG application instance
+   * <br/>2) an implementation of [[jellon.ssg.engine.flagship.spi.INodeProcessor]] to call sub-nodes
+   *
+   * @see [[jellon.ssg.engine.flagship.spi.INodeProcessor.INodeProcessorExt#process(jellon.ssg.node.api.INodeMap, java.lang.Object, jellon.ssg.node.api.INode, jellon.ssg.engine.flagship.api.IFlagshipEngine)]]
+   * @see [[jellon.ssg.engine.flagship.api.IFlagshipApplication.IFlagshipApplicationExt]]
+   */
+  def process(state: INodeMap, key: Any, node: INode): INodeMap
 }

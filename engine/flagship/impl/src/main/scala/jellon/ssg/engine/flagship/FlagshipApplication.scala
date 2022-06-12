@@ -1,10 +1,8 @@
 package jellon.ssg.engine.flagship
 
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.BASE_PATH
 import jellon.ssg.engine.flagship.api.{IFlagshipApplication, IFlagshipEngine, INodeProcessors}
-import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor, IResolverFactory}
+import jellon.ssg.engine.flagship.spi.{INodeProcessor, IResolverFactory}
 import jellon.ssg.io.spi.IResources
-import jellon.ssg.node.api.INodeMap
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -100,21 +98,17 @@ import scala.jdk.CollectionConverters._
  * }}}
  */
 @Component
-class FlagshipApplication(processors: Seq[INodeProcessor], resolver: IResolverFactory, resources: IResources)
-  extends AbstractFlagship(processors, resolver, resources)
-    with IFlagshipApplication {
+class FlagshipApplication(resources: IResources, resolver: IResolverFactory, processors: Seq[INodeProcessor])
+    extends IFlagshipApplication {
 
   @Autowired
-  def this(delegates: java.util.List[INodeProcessor], resolver: IResolverFactory, resources: IResources) =
-    this(delegates.asScala.toSeq, resolver, resources)
+  def this(resources: IResources, resolver: IResolverFactory, delegates: java.util.List[INodeProcessor]) =
+    this(resources, resolver, delegates.asScala.toSeq)
 
   @Inject
-  def this(delegates: INodeProcessors, resolver: IResolverFactory, resources: IResources) =
-    this(delegates(), resolver, resources)
+  def this(resources: IResources, resolver: IResolverFactory, delegates: INodeProcessors) =
+    this(resources, resolver, delegates())
 
-  override protected def engine: IFlagshipEngine =
-    new FlagshipEngine(processorMap, resolver, resources)
-
-  override def process(state: INodeMap): Unit =
-    process(BASE_PATH, state)
+  override lazy val createEngine: IFlagshipEngine =
+    new FlagshipEngine(resources, resolver, processors)
 }

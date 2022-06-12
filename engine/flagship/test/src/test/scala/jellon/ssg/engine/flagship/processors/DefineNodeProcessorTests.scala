@@ -2,33 +2,35 @@ package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.FlagshipEngine
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.{INSTRUCTIONS, instructionsNodeMap}
 import jellon.ssg.engine.flagship.processors.DefineNodeProcessorTests.{engine, instructions}
+import jellon.ssg.engine.flagship.spi.INodeProcessor.{INSTRUCTIONS, instructionsNodeMap}
 import jellon.ssg.engine.flagship.st4.ST4ResolverFactory
-import jellon.ssg.node.api.INodeMap
+import jellon.ssg.node.api.INode
 import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
 
 object DefineNodeProcessorTests {
-  val instructions: INodeMap = instructionsNodeMap(Node(Map[Any, Any](
-    "simple" -> Map(
-      "key1" -> "value1",
-      "key2" -> "value2",
-    ),
-    "unresolved" -> Map(
-      "key1" -> "<simple.key1>",
-      "key2" -> "<simple.key2>",
-      "key3" -> 5,
+  val instructions: INode = Node(Map[Any, Any](
+    "define" -> Map(
+      "simple" -> Map(
+        "key1" -> "value1",
+        "key2" -> "value2",
+      ),
+      "unresolved" -> Map(
+        "key1" -> "<simple.key1>",
+        "key2" -> "<simple.key2>",
+        "key3" -> 5,
+      )
     )
-  )))
+  ))
 
-  val engine: IFlagshipEngine = new FlagshipEngine(Map("define" -> Seq(DefineNodeProcessor)), ST4ResolverFactory, null)
+  val engine: IFlagshipEngine = new FlagshipEngine(null, ST4ResolverFactory, Seq(DefineNodeProcessor))
 }
 
 class DefineNodeProcessorTests extends AnyFunSpec {
   describe("test simple INodeMap") {
 
-    val actual = engine.process("define", instructions)
+    lazy val actual = engine.process(instructionsNodeMap(instructions), "define", instructions.attribute("define"))
 
     it("should contain a simple value") {
       val simple = actual("simple").attributes
@@ -45,20 +47,21 @@ class DefineNodeProcessorTests extends AnyFunSpec {
   }
 
   describe("test copy nodes via * key") {
-    val cloneValuesNode = Node(Map[Any, Any](
+    lazy val cloneValuesNode = Node(Map[Any, Any](
       "*" -> "unresolved"
     ))
 
-    val updatedInstructions = instructions.replaceAttribute(
-      INSTRUCTIONS,
+    lazy val updatedInstructions = instructions.replaceAttribute(
+      "define",
       _.setAttribute("clone", cloneValuesNode)
     )
 
-    val actual = engine.process("define", updatedInstructions)
+    lazy val actual = engine.process(instructionsNodeMap(updatedInstructions), "define", updatedInstructions.attribute("define"))
 
-    val clone = actual("clone").attributes
+    lazy val clone = actual("clone").attributes
 
     it("should contain a copy of all the resolved values in the \"unresolved\" node") {
+      clone
       assert(clone.string("key1") === "<simple.key1>")
       assert(clone.string("key2") === "<simple.key2>")
       assert(clone.attribute("key3").value === 5)

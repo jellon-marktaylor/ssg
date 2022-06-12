@@ -1,30 +1,50 @@
 package jellon.ssg.engine.flagship.api
 
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.{INPUT, INSTRUCTIONS}
+import jellon.ssg.engine.flagship.spi.INodeProcessor.{INPUT, INSTRUCTIONS}
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.NodeMap
 
 object IFlagshipApplication {
+  val BASE_KEY: String = ""
 
-  implicit class FlagshipApplicationExt(self: IFlagshipApplication) {
+  implicit class IFlagshipApplicationExt(self: IFlagshipApplication) {
+    /**
+     * Simply delegate to the engine
+     *
+     * @see [[jellon.ssg.engine.flagship.api.IFlagshipEngine#process(jellon.ssg.node.api.INodeMap, java.lang.Object, jellon.ssg.node.api.INode)]]
+     */
     @inline
-    def process(initialState: Map[Any, INode]): Unit = self
-      .process(new NodeMap(initialState))
+    def process(state: INodeMap, key: Any, node: INode): Unit =
+      self.createEngine.process(state, key, node)
 
     @inline
-    def process(input: INode): Unit = process(Map[Any, INode](
-      INPUT -> input
-    ))
+    def processInstructions(instructions: INode): Unit =
+      process(
+        new NodeMap(Map[Any, INode](INSTRUCTIONS -> instructions)),
+        BASE_KEY,
+        instructions
+      )
 
     @inline
-    def process(input: INode, instructions: INode): Unit = process(Map[Any, INode](
-      INPUT -> input,
-      INSTRUCTIONS -> instructions
-    ))
+    def processInstructionsWithInput(instructions: INode, input: INode): Unit = process(
+      new NodeMap(Map[Any, INode](
+        INSTRUCTIONS -> instructions,
+        INPUT -> input,
+      )),
+      BASE_KEY,
+      instructions
+    )
   }
 
 }
 
+/**
+ * The source for a [[jellon.ssg.engine.flagship.api.IFlagshipEngine]] which kicks off an SSG instance
+ *
+ * @see [[jellon.ssg.engine.flagship.api.IFlagshipApplication.IFlagshipApplicationExt#process(jellon.ssg.node.api.INodeMap, java.lang.Object, jellon.ssg.node.api.INode)]]
+ * @see [[jellon.ssg.engine.flagship.api.IFlagshipApplication.IFlagshipApplicationExt#processInstructions(jellon.ssg.node.api.INode)]]
+ * @see [[jellon.ssg.engine.flagship.api.IFlagshipApplication.IFlagshipApplicationExt#processInstructionsWithInput(jellon.ssg.node.api.INode, jellon.ssg.node.api.INode)]]
+ */
 trait IFlagshipApplication {
-  def process(state: INodeMap): Unit
+  def createEngine: IFlagshipEngine
 }
