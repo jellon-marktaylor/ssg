@@ -1,24 +1,22 @@
 package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.{IFlagshipNodeMapExtensions, INSTRUCTIONS}
-import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
+import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
+import jellon.ssg.engine.flagship.spi.INodeProcessor.INSTRUCTIONS
 import jellon.ssg.io.spi.IOutputStreamResources
-import jellon.ssg.node.api.INodeMap
+import jellon.ssg.node.api.{INode, INodeMap}
 
 import java.io.{File, IOException, InputStream}
 import java.util.Objects
 import java.util.zip.ZipInputStream
 
 object UnzipNodeProcessor extends AbstractNodeProcessor("unzip") {
-  override def processAttributes(unzipNode: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap = {
+  override def process(state: INodeMap, key: Any, node: INode, engine: IFlagshipEngine): Unit = {
     val from: InputStream = engine.readFrom(engine.resolveNodeString(state, s"${INSTRUCTIONS}.from"))
     try {
       val to = engine.resolveNodeString(state, s"${INSTRUCTIONS}.to")
       unzip(from, to, engine.resources)
     } finally if (from != null) from.close()
-
-    INodeMap.empty
   }
 
   @throws[IOException]

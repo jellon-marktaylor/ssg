@@ -1,11 +1,11 @@
 package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
+import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
 import jellon.ssg.engine.flagship.st4.helpers.{Groups, Templates}
-import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor}
 import jellon.ssg.io.api.emptyString
 import jellon.ssg.io.spi.IUrlResources
-import jellon.ssg.node.api.INodeMap
+import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.api.INodeMap.NodeMapExt
 import org.stringtemplate.v4.misc.STMessage
 import org.stringtemplate.v4.{AutoIndentWriter, ST, STErrorListener, STGroupDir, STGroupFile}
@@ -17,8 +17,8 @@ import scala.io.Source
 
 object St4NodeProcessor extends AbstractNodeProcessor("st4") {
   @throws[IOException]
-  override def processAttributes(st4Node: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap = {
-    val st4 = state("st4").attributes ++ st4Node
+  override def process(state: INodeMap, key: Any, st4Node: INode, engine: IFlagshipEngine): Unit = {
+    val st4: INodeMap = state("st4").attributes ++ st4Node.attributes
     val output = engine.resolve(state, st4.string("output"))
     val hint = st4.optString("hint")
       .getOrElse(emptyString)
@@ -71,8 +71,6 @@ object St4NodeProcessor extends AbstractNodeProcessor("st4") {
         outputStream.close()
       }
     }
-
-    INodeMap.empty
   }
 
   @throws[IOException]

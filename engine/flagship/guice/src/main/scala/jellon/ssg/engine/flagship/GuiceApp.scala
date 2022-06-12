@@ -2,11 +2,9 @@ package jellon.ssg.engine.flagship
 
 import com.google.inject.{Guice, Injector}
 import jellon.ssg.engine.flagship.api.IFlagshipApplication
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.{INPUT, INSTRUCTIONS}
 import jellon.ssg.engine.flagship.modules.{FlagshipAppModule, FlagshipEngineModule, ProcessorsModule}
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.parser.api.INodeParsers
-import jellon.ssg.node.spi.NodeMap
 
 object GuiceApp extends App {
   execute(
@@ -40,18 +38,11 @@ object GuiceApp extends App {
       .parse(instructionsResource)
       .get
 
-    injector.getInstance[IFlagshipApplication](classOf[IFlagshipApplication])
-      .process(new NodeMap(Map[Any, INode](
-        INPUT -> input,
-        INSTRUCTIONS -> instructions,
-      )))
+    execute(injector, instructions, input)
   }
 
   def execute(injector: Injector, input: INode, instructions: INode): Unit = {
     injector.getInstance[IFlagshipApplication](classOf[IFlagshipApplication])
-      .process(new NodeMap(Map[Any, INode](
-        INPUT -> input,
-        INSTRUCTIONS -> instructions,
-      )))
+      .processInstructionsWithInput(instructions, input)
   }
 }

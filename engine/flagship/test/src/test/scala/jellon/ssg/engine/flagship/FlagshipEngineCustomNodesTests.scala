@@ -1,18 +1,19 @@
 package jellon.ssg.engine.flagship
 
+import jellon.ssg.engine.flagship.api.IFlagshipApplication.BASE_KEY
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.api.IFlagshipEngine.{BASE_PATH, IFlagshipNodeMapExtensions, instructionsNodeMap, outputNodeMap}
 import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
-import jellon.ssg.node.api.{INode, INodeList, INodeMap}
+import jellon.ssg.engine.flagship.spi.INodeProcessor._
+import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
 
 import scala.collection.immutable.ListMap
 
 class FlagshipEngineCustomNodesTests extends AnyFunSpec {
-  var output: Vector[String] = Vector.empty
+  var testResults: Vector[String] = Vector.empty
 
-  /** goal: add "hello -> world" and "foo -> bar" to output using custom node processors that demonstrate a variety of functionalities
+  /** goal: add "hello -> world" and "foo -> bar" to testResults using custom node processors that demonstrate a variety of functionalities
    * {{{
    * {
    *   "foo": {
@@ -37,7 +38,7 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
    */
   describe("custom processors example") {
     // this is how easy it can be to define a node in code
-    val model: INode = Node(ListMap(
+    val instructions: INode = Node(ListMap(
       "foo" -> ListMap(
         "dictionary" -> ListMap(
           "a" -> 1,
@@ -60,68 +61,68 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
       FooNodeProcessor,
       // returns the dictionary node itself
       DictionaryNodeProcessor,
-      // defines the input list as a node called "output"
+      // defines the input list as a node called "testResults"
       ListNodeProcessor,
       // calls the bat node
       BarNodeProcessor,
-      // write to `output` Vector; see scaladoc on `description` above
+      // write to `testResults` Vector; see scaladoc on `description` above
       BatNodeProcessor
     ))
 
-    val handler = new FlagshipApplication(processors, null, null)
-    handler.process(instructionsNodeMap(model))
+    val handler = new FlagshipApplication(null, null, processors)
+    handler.processInstructions(instructions)
 
     it("should only produce 2 outputs") {
-      assert(output.size == 2)
+      assert(testResults.size == 2)
     }
 
     it("should contain hello -> world") {
-      assert(output.contains("hello -> world"))
+      assert(testResults.contains("hello -> world"))
     }
 
     it("should contain foo -> bar") {
-      assert(output.contains("foo -> bar"))
+      assert(testResults.contains("foo -> bar"))
     }
   }
 
-  object RootNodeProcessor extends AbstractNodeProcessor(BASE_PATH) {
-    override def processAttributes(root: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap =
-      engine.processInstructions("foo", state, root("foo"))
+  object RootNodeProcessor extends AbstractNodeProcessor(BASE_KEY) {
+    override def process(state: INodeMap, key: Any, rootNode: INode, engine: IFlagshipEngine): Unit =
+      engine.process(state, "foo", rootNode.attribute("foo"))
   }
 
   object ListNodeProcessor extends AbstractNodeProcessor("list") {
-    override def processChildren(list: INodeList, state: INodeMap, engine: IFlagshipEngine): INodeMap =
-      outputNodeMap(Node(list))
+    override def propagateOutput: Boolean =
+      true
 
-    override def processAttributes(instructions: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap =
-      throw new UnsupportedOperationException("list shouldn't have attributes in this test method")
+    override def output(state: INodeMap, key: Any, list: INode, engine: IFlagshipEngine): INode =
+      Node(outputNodeMap(list))
   }
 
   object DictionaryNodeProcessor extends AbstractNodeProcessor("dictionary") {
-    override def processAttributes(dictionary: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap =
-      dictionary
+    override def propagateOutput: Boolean =
+      true
   }
 
   object FooNodeProcessor extends AbstractNodeProcessor("foo") {
-    def processAttributes(foo: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap = {
-      val dictNode: INodeMap = engine.processInstructions("dictionary", state, foo("dictionary"))
-      val listNode: INodeMap = engine.processInstructions("list", state, foo("list"))
+    override def process(state: INodeMap, key: Any, foo: INode, engine: IFlagshipEngine): Unit = {
+      val dictNode: INodeMap = engine.process(state, "dictionary", foo.attribute("dictionary"))
+      val listNode: INodeMap = engine.process(state, "list", foo.attribute("list"))
 
       val newState = state
         .setAttribute("dictionary", Node(dictNode))
         .setAttribute("list", listNode.output)
 
-      engine.processInstructions(s"$path/bar", newState, foo("bar"))
+      engine.process(newState, s"$name/bar", foo.attribute("bar"))
     }
   }
 
   object BarNodeProcessor extends AbstractNodeProcessor("foo/bar") {
-    override def processAttributes(bar: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap =
-      engine.processInstructions(s"$path/bat", state, bar("bat"))
+    override def process(state: INodeMap, key: Any, bar: INode, engine: IFlagshipEngine): Unit =
+      engine.process(state, s"$name/bat", bar.attribute("bat"))
   }
 
   object BatNodeProcessor extends AbstractNodeProcessor("foo/bar/bat") {
-    override def processAttributes(bat: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap = {
+    override def process(state: INodeMap, key: Any, bat: INode, engine: IFlagshipEngine): Unit = {
       val dictNode = state("dictionary") // ("a" -> 1), ("b" -> 3)
       val listNode = state("list") // "world", "ignored", "bar"
 
@@ -129,10 +130,8 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
         val batValue: String = bat.attributeAs[String](batAttribute) // "a" | "b"
         val index: Int = dictNode.attributeAs[Integer](batValue) // 1 | 3
         val listValue = listNode.index(index - 1).valueAs[String] // "world" | "bar"
-        output = output :+ s"$batAttribute -> $listValue" // hello -> world | foo -> bar
+        testResults = testResults :+ s"$batAttribute -> $listValue" // hello -> world | foo -> bar
       })
-
-      INodeMap.empty
     }
   }
 

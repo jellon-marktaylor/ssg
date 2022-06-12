@@ -1,24 +1,25 @@
 package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
-import jellon.ssg.node.api.INodeMap
+import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
+import jellon.ssg.node.api.{INode, INodeMap}
 
 object ScopeNodeProcessor extends AbstractNodeProcessor("scope") {
-  override def processAttributes(scopeNode: INodeMap, state: INodeMap, engine: IFlagshipEngine): INodeMap = {
-    val result = scopeNode.optAttribute("define")
-      .map(defineNode =>
-        engine.processInstructions("define", state, defineNode)
-      )
-      .getOrElse(INodeMap.empty)
+  override def propagateOutput: Boolean =
+    false
+
+  override def output(state: INodeMap, key: Any, node: INode, engine: IFlagshipEngine): INode =
+    super.output(state, key, node, engine)
+
+  override def process(state: INodeMap, key: Any, scopeNode: INode, engine: IFlagshipEngine): Unit = {
+    this.processEachChild(state, key, scopeNode.children, engine)
 
     scopeNode
-      .keySet
-      .filter(_.isInstanceOf[String])
-      .map(_.asInstanceOf[String])
-      .filterNot(_ == "define")
-      .foldLeft(result)((r, key) =>
-        r ++ engine.processInstructions(key, state ++ r, scopeNode(key))
-      )
+      .attributes
+      .toMap
+      .foldLeft[INodeMap](INodeMap.empty)((r, kv) => {
+        val (childKey, child) = kv
+        r ++ engine.process(state ++ r, childKey, child)
+      })
   }
 }
