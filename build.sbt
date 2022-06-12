@@ -2,7 +2,7 @@ ThisBuild / scalaVersion := "2.13.8"
 
 ThisBuild / organization := "jellon"
 
-ThisBuild / version := "0.1.0"
+ThisBuild / version := "0.2.0-SNAPSHOT"
 
 enablePlugins(Antlr4Plugin)
 
