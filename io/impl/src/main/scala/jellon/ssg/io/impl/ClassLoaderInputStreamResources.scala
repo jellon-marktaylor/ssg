@@ -40,11 +40,18 @@ object ClassLoaderInputStreamResources extends IInputStreamResources {
 
   override def optInputStream(resource: String): Option[InputStream] =
     optInputStream(Thread.currentThread().getContextClassLoader, resource)
-      .orElse(optInputStream(ClassLoader.getSystemClassLoader, resource))
-      .orElse(optSystemResourceAsStream(resource))
+      .orElse(
+        optInputStream(ClassLoader.getSystemClassLoader, resource)
+      )
+      .orElse(
+        optSystemResourceAsStream(resource)
+      )
 
   def optInputStream(cl: ClassLoader, resource: String): Option[InputStream] =
-    Option(cl).map(_.getResourceAsStream(resource))
+    Option(cl)
+      .flatMap(cl =>
+        Option(cl.getResourceAsStream(resource))
+      )
 
   def optSystemResourceAsStream(resource: String): Option[InputStream] = {
     Option(ClassLoader.getSystemResourceAsStream(resource))

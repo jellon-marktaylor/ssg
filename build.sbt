@@ -117,6 +117,7 @@ lazy val engineFlagshipImpl = (project in file("engine/flagship/impl"))
     libraryDependencies ++= Dependencies.dependencyInjection
       ++ Dependencies.antlr
       ++ Dependencies.stringTemplate4
+      ++ Dependencies.velocity
       ++ Dependencies.slf4j,
   )
 
@@ -125,12 +126,8 @@ lazy val engineFlagshipAppGuice = (project in file("engine/flagship/guice"))
   .settings(
     name := "engine-flagship-app-guice",
     libraryDependencies ++= Dependencies.dependencyInjection
-      ++ Dependencies.jackson
-      ++ Dependencies.yamlSnake
-      ++ Dependencies.stringTemplate4
       ++ Dependencies.guice
       ++ Dependencies.slf4j
-      ++ Dependencies.testLibs,
   )
 
 lazy val engineFlagshipAppSpring = (project in file("engine/flagship/spring"))
@@ -138,12 +135,8 @@ lazy val engineFlagshipAppSpring = (project in file("engine/flagship/spring"))
   .settings(
     name := "engine-flagship-app-spring",
     libraryDependencies ++= Dependencies.dependencyInjection
-      ++ Dependencies.jackson
-      ++ Dependencies.yamlSnake
-      ++ Dependencies.stringTemplate4
       ++ Dependencies.guice
       ++ Dependencies.slf4j
-      ++ Dependencies.testLibs,
   )
 
 lazy val engineFlagshipTest = (project in file("engine/flagship/test"))
@@ -151,7 +144,6 @@ lazy val engineFlagshipTest = (project in file("engine/flagship/test"))
   .settings(
     name := "engine-flagship-test",
     libraryDependencies ++= Dependencies.dependencyInjection
-      ++ Dependencies.antlr
       ++ Dependencies.stringTemplate4
       ++ Dependencies.slf4j
       ++ Dependencies.testLibs,

@@ -1,0 +1,3 @@
+#foreach( $kv in $values )
+${kv.key} = ${kv.value}
+#end
