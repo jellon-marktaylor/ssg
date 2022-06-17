@@ -1,12 +1,11 @@
 package jellon.ssg.engine.flagship.processors
 
-import jellon.ssg.engine.flagship.FlagshipEngine
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
 import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
-import jellon.ssg.engine.flagship.spi.INodeProcessor.{INPUT, INSTRUCTIONS, INodeProcessorNodeMapExtensions}
-import jellon.ssg.engine.flagship.st4.ST4ResolverFactory
+import jellon.ssg.engine.flagship.spi.INodeProcessor.{INPUT, INSTRUCTIONS}
+import jellon.ssg.engine.flagship.{FlagshipEngine, ResolverFactory}
 import jellon.ssg.node.api.{INode, INodeMap}
-import jellon.ssg.node.spi.{Node, NodeMap}
+import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
 
 class LoopNodeProcessorTests extends AnyFunSpec {
@@ -23,7 +22,7 @@ class LoopNodeProcessorTests extends AnyFunSpec {
 
   def runTestWithInstructions(elements: Seq[(Any, Any)]): Vector[String] = {
     val output = new PrintNodeProcessor
-    val engine: IFlagshipEngine = new FlagshipEngine(null, ST4ResolverFactory, Seq(LoopNodeProcessor, output))
+    val engine: IFlagshipEngine = new FlagshipEngine(null, ResolverFactory, Seq(LoopNodeProcessor, output))
 
     val instructions: INode = Node(Map(
       "loop" -> Map(elements: _*)

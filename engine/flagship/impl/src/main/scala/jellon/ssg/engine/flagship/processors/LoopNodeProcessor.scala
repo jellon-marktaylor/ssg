@@ -2,8 +2,7 @@ package jellon.ssg.engine.flagship.processors
 
 import grizzled.slf4j.Logging
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
-import jellon.ssg.engine.flagship.spi.INodeProcessor._
+import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.Node
 
