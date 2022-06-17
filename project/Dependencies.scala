@@ -25,6 +25,7 @@ object Dependencies {
 
   val antlr = Seq("org.antlr" % "antlr4-runtime" % "4.3")
   val stringTemplate4 = Seq("org.antlr" % "ST4" % "4.3")
+  val velocity = Seq("org.apache.velocity" % "velocity-engine-core" % "2.3")
 
   // TEST
   val testLibs = Seq(
