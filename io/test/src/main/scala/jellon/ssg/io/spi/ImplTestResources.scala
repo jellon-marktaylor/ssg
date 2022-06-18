@@ -1,9 +1,12 @@
 package jellon.ssg.io.spi
 
+import jellon.ssg.io.IResetable
 import jellon.ssg.io.impl._
 
-class ImplTestResources(val urlResources: IUrlResources, val inputStreamResources: IInputStreamResources, val outputStreamResources: ByteArrayOutputStreamResources, val hintHandlers: IHintHandlers) extends Resources(ClassLoaderUrlResources, ClassLoaderInputStreamResources, outputStreamResources, hintHandlers) {
-  def this(outputStreamResources: ByteArrayOutputStreamResources, hintHandlers: IHintHandlers) =
+import java.io.ByteArrayOutputStream
+
+class ImplTestResources(val urlResources: IUrlResources, val inputStreamResources: IInputStreamResources, val outputStreamResources: IOutputStreamResources, val hintHandlers: IHintHandlers) extends Resources(ClassLoaderUrlResources, ClassLoaderInputStreamResources, outputStreamResources, hintHandlers) with IResetable {
+  def this(outputStreamResources: IOutputStreamResources, hintHandlers: IHintHandlers) =
     this(ClassLoaderUrlResources, ClassLoaderInputStreamResources, outputStreamResources, hintHandlers)
 
   def this(hintHandlers: IHintHandlers) =
@@ -12,6 +15,26 @@ class ImplTestResources(val urlResources: IUrlResources, val inputStreamResource
   def this() =
     this(new HintHandlers(Seq.empty))
 
-  def reset(): Unit =
-    outputStreamResources.clear()
+  def optTestOutputAsStream(resource: String): Option[ByteArrayOutputStream] = outputStreamResources match {
+    case testOutputs: ByteArrayOutputStreamResources =>
+      testOutputs.outputs.get(resource)
+    case _ =>
+      Option.empty
+  }
+
+  def optTestOutput(resource: String): Option[String] =
+    optTestOutputAsStream(resource)
+      .map(_.toString)
+
+  def lookupTestOutputOrEmpty(resource: String): String =
+    optTestOutputAsStream(resource)
+      .map(_.toString)
+      .getOrElse("")
+
+  override def reset(): Unit = {
+    IResetable.reset(urlResources)
+    IResetable.reset(inputStreamResources)
+    IResetable.reset(outputStreamResources)
+    IResetable.reset(hintHandlers)
+  }
 }

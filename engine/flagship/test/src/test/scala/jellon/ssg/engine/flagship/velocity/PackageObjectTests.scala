@@ -8,13 +8,13 @@ import org.scalatest.funspec.AnyFunSpec
 
 import java.io.{ByteArrayOutputStream, StringWriter}
 
-class PackageObjectTests extends AnyFunSpec {
+object PackageObjectTests {
   val nl: String = System.lineSeparator()
 
   val templateName: String =
     s"${classOf[PackageObjectTests].getPackage.getName.replace('.', '/')}/${classOf[PackageObjectTests].getSimpleName}.vm"
 
-  val node: INode = Node(Map(
+  val model: INode = Node(Map(
     "values" -> Seq(
       Map(
         "key" -> "hello",
@@ -30,10 +30,15 @@ class PackageObjectTests extends AnyFunSpec {
       ),
     )
   ))
+}
+
+class PackageObjectTests extends AnyFunSpec {
+
+  import PackageObjectTests._
 
   describe("merge(templateString: String, node: INode)") {
     it("should use a FlagshipVelocityContext to merge the template") {
-      val actual = velocity.merge("${values[0].key} = ${values[1].value}", node)
+      val actual = velocity.merge("${values[0].key} = ${values[1].value}", model)
       assertResult("hello = bar")(actual)
     }
   }
@@ -41,7 +46,7 @@ class PackageObjectTests extends AnyFunSpec {
   describe("merge(inputResources: IInputStreamResources, templateName: String, node: INode, writer: Writer)") {
     it("should merge with a template") {
       val stringWriter = new StringWriter()
-      velocity.merge(ClassLoaderInputStreamResources, templateName, node, stringWriter)
+      velocity.merge(ClassLoaderInputStreamResources, templateName, model, stringWriter)
       val actual = stringWriter.toString
       assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
     }
@@ -50,7 +55,7 @@ class PackageObjectTests extends AnyFunSpec {
   describe("merge(inputResources: IInputStreamResources, templateName: String, node: INode, outputStream: OutputStream)") {
     it("should merge with a template") {
       val byteArrayOutputStream = new ByteArrayOutputStream()
-      velocity.merge(ClassLoaderInputStreamResources, templateName, node, byteArrayOutputStream)
+      velocity.merge(ClassLoaderInputStreamResources, templateName, model, byteArrayOutputStream)
       val actual = byteArrayOutputStream.toString
       assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
     }
@@ -58,7 +63,7 @@ class PackageObjectTests extends AnyFunSpec {
 
   describe("merge(inputResources: IInputStreamResources, templateName: String, node: INode)") {
     it("should merge with a template") {
-      val actual = velocity.merge(ClassLoaderInputStreamResources, templateName, node)
+      val actual = velocity.merge(ClassLoaderInputStreamResources, templateName, model)
       assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
     }
   }
