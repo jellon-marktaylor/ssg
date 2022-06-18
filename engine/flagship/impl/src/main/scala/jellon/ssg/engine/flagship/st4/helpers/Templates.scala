@@ -6,7 +6,7 @@ import jellon.ssg.node.spi.{ListNode, ValueNode}
 import org.stringtemplate.v4.ST
 
 import java.io.IOException
-import scala.jdk.CollectionConverters.{SeqHasAsJava, SetHasAsScala}
+import scala.jdk.CollectionConverters.SetHasAsScala
 
 object Templates {
   def stringTemplate(template: String): ST =

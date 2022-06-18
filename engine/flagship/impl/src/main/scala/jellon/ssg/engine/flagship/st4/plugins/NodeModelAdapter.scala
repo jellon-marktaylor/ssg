@@ -4,8 +4,6 @@ import jellon.ssg.node.api.INode
 import jellon.ssg.node.spi.{ListNode, ValueNode}
 import org.stringtemplate.v4.{Interpreter, ModelAdaptor, ST}
 
-import scala.jdk.CollectionConverters.SeqHasAsJava
-
 object NodeModelAdapter extends ModelAdaptor[INode] {
   override def getProperty(interpreter: Interpreter, st: ST, node: INode, property: Any, propertyName: String): AnyRef =
     getProperty(Option(node).getOrElse(INode.empty), property)

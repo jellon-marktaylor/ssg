@@ -1,7 +1,7 @@
 package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
+import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.engine.flagship.spi.INodeProcessor.INSTRUCTIONS
 import jellon.ssg.io.spi.IOutputStreamResources
 import jellon.ssg.node.api.{INode, INodeMap}

@@ -1,4 +1,5 @@
 package jellon.ssg.node.api
+
 import java.util
 
 object EmptyNodeList extends INodeList {

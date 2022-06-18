@@ -5,10 +5,6 @@ import jellon.ssg.node.api.INode
 import jellon.ssg.node.spi.{Node, ValueNode}
 import org.scalatest.funspec.AnyFunSpec
 
-import java.util
-import scala.collection.immutable.ListMap
-import scala.jdk.CollectionConverters.{MapHasAsJava, SeqHasAsJava}
-
 class NodeModelAdapterTests extends AnyFunSpec with Logging {
   describe("NodeModelAdapter.getProperty(node: INode, property: Any)") {
     it("should return the value of a ValueNode(Int)") {

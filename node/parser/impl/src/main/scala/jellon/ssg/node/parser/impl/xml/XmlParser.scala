@@ -1,6 +1,5 @@
 package jellon.ssg.node.parser.impl.xml
 
-import grizzled.slf4j.Logging
 import jellon.ssg.io.spi.IInputStreamResources
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.parser.impl.AbstractParser
