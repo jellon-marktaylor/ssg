@@ -9,6 +9,24 @@ import java.io.{InputStream, OutputStream}
 object IFlagshipEngine {
 
   implicit class IFlagshipEngineExtensions(self: IFlagshipEngine) {
+    def resolveNode(name: String, dictionary: INodeMap, rawText: String): INode =
+      self.resolver.asNode(name, dictionary, rawText)
+
+    def resolveNode(name: String, dictionary: INode, rawText: String): INode =
+      resolveNode(name, dictionary.attributes, rawText)
+
+    def resolve(name: String, dictionary: INodeMap, rawText: String): String =
+      self.resolver.asText(name, dictionary, rawText)
+
+    def resolve(name: String, dictionary: INode, rawText: String): String =
+      resolve(name, dictionary.attributes, rawText)
+
+    def resolveNodeString(name: String, dictionary: INodeMap, unresolvedText: String): String =
+      resolve(name, dictionary, resolveNode(dictionary, unresolvedText).valueAs[String])
+
+    def resolveNodeString(name: String, dictionary: INode, unresolvedText: String): String =
+      resolveNodeString(name, dictionary.attributes, unresolvedText)
+
     def resolveNode(dictionary: INodeMap, rawText: String): INode =
       self.resolver.asNode(dictionary, rawText)
 
