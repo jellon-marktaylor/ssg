@@ -4,6 +4,10 @@ import jellon.ssg.engine.flagship.api.IFlagshipEngine
 import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.node.api.{INode, INodeMap}
 
+/**
+ * Use the FlagshipEngine to execute each nested node sequentially. Order matters when using instructions that influence
+ * the state, such as a "define" node.
+ */
 object ScopeNodeProcessor extends AbstractNodeProcessor("scope") {
   override def propagateOutput: Boolean =
     false

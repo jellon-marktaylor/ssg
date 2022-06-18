@@ -6,6 +6,16 @@ import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.Node
 
+/**
+ * Loops over objects in a list or map passing them into a scope. The state passed into the scope will define
+ * "foreach.key" and "foreach.value" where key is either the index or name and value is the node being iterated over.
+ * <br/>Name: loop
+ *
+ * @note foreach (required) points at any list or map value in the state
+ * @note do (required) same as [[ScopeNodeProcessor]]
+ * @example { "define": { "foo": "bar", "bar": "bat" }, "loop": { "foreach": "define", "do": { ... } } }
+ * @example don't forget to check the tests for examples
+ */
 object LoopNodeProcessor extends AbstractNodeProcessor("loop") with Logging {
   override def propagateOutput: Boolean =
     false
