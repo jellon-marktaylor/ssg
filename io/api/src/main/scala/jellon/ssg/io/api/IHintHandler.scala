@@ -4,8 +4,8 @@ import java.io.{InputStream, OutputStream}
 import java.net.URL
 
 /** Allows customization for [[jellon.ssg.io.spi.IUrlResources]], [[jellon.ssg.io.spi.IInputStreamResources]],
-  * [[jellon.ssg.io.spi.IOutputStreamResources]], or [[jellon.ssg.io.spi.IResources]]
-  */
+ * [[jellon.ssg.io.spi.IOutputStreamResources]], or [[jellon.ssg.io.spi.IResources]]
+ */
 trait IHintHandler {
   def optURL(resource: String, hint: String): Option[URL] = Option.empty
 

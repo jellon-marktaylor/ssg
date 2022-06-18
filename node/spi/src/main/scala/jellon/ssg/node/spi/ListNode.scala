@@ -2,7 +2,7 @@ package jellon.ssg.node.spi
 
 import jellon.ssg.node.api.{INode, INodeList, INodeMap}
 
-final class ListNode private (val elements: Seq[INode], val children: INodeList) extends INode {
+final class ListNode private(val elements: Seq[INode], val children: INodeList) extends INode {
   def this(children: INodeList) = this(children.toSeq, children)
 
   def this(elements: Seq[INode]) = this(elements, new NodeList(elements))

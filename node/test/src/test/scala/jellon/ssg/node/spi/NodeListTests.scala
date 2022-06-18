@@ -32,9 +32,9 @@ class NodeListTests extends AnyFunSpec {
     }
   }
 
-//  describe("INodeList.NodeList") {
-//
-//  }
+  //  describe("INodeList.NodeList") {
+  //
+  //  }
 
   describe("INodeList.NodeListExt") {
     it("should toSeq") {

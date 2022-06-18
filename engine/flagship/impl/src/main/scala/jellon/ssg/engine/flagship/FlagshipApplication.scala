@@ -99,7 +99,7 @@ import scala.jdk.CollectionConverters._
  */
 @Component
 class FlagshipApplication(resources: IResources, resolver: IResolverFactory, processors: Seq[INodeProcessor])
-    extends IFlagshipApplication {
+  extends IFlagshipApplication {
 
   @Autowired
   def this(resources: IResources, resolver: IResolverFactory, delegates: java.util.List[INodeProcessor]) =

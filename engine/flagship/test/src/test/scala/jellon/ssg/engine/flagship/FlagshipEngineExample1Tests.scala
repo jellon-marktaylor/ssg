@@ -3,7 +3,6 @@ package jellon.ssg.engine.flagship
 import com.google.inject.Guice
 import jellon.ssg.engine.flagship.modules.{FlagshipEngineModule, ProcessorsModule}
 import jellon.ssg.io.impl.{ByteArrayOutputStreamResources, ClassLoaderInputStreamResources, ClassLoaderUrlResources, Resources}
-import jellon.ssg.io.spi.IResources.relativeResource
 import jellon.ssg.io.spi.{IInputStreamResources, IOutputStreamResources, IResources, IUrlResources}
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.parser.impl.json.JsonParser
@@ -12,6 +11,7 @@ import org.scalatest.funspec.AnyFunSpec
 import scala.io.Source
 
 class FlagshipEngineExample1Tests extends AnyFunSpec {
+
   object FlagshipEngineExample1TestsGuiceModule extends AbstractGuiceModule {
     val baosStreamResources: ByteArrayOutputStreamResources =
       new ByteArrayOutputStreamResources()
