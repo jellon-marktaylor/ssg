@@ -11,6 +11,9 @@ import java.io.{ByteArrayOutputStream, StringWriter}
 object PackageObjectTests {
   val nl: String = System.lineSeparator()
 
+  val expectedOutput: String =
+    s"hello = world${nl}foo = bar${nl}bar = bat$nl"
+
   val templateName: String =
     s"${classOf[PackageObjectTests].getPackage.getName.replace('.', '/')}/${classOf[PackageObjectTests].getSimpleName}.vm"
 
@@ -48,7 +51,7 @@ class PackageObjectTests extends AnyFunSpec {
       val stringWriter = new StringWriter()
       velocity.merge(ClassLoaderInputStreamResources, templateName, model, stringWriter)
       val actual = stringWriter.toString
-      assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
+      assertResult(expectedOutput)(actual)
     }
   }
 
@@ -57,14 +60,14 @@ class PackageObjectTests extends AnyFunSpec {
       val byteArrayOutputStream = new ByteArrayOutputStream()
       velocity.merge(ClassLoaderInputStreamResources, templateName, model, byteArrayOutputStream)
       val actual = byteArrayOutputStream.toString
-      assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
+      assertResult(expectedOutput)(actual)
     }
   }
 
   describe("merge(inputResources: IInputStreamResources, templateName: String, node: INode)") {
     it("should merge with a template") {
       val actual = velocity.merge(ClassLoaderInputStreamResources, templateName, model)
-      assertResult(s"hello = world${nl}foo = bar${nl}bar = bat$nl")(actual)
+      assertResult(expectedOutput)(actual)
     }
   }
 }
