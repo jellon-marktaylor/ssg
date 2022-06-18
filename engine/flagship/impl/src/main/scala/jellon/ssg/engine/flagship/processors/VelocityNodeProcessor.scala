@@ -10,6 +10,7 @@ import jellon.ssg.node.spi.Node
 import java.io.{Closeable, IOException, OutputStream}
 
 /**
+ * velocity <= name
  * @note template (required) the resource path and name of the vm file to use including the extension
  * @note output (required) the file or directory (if hint is used) to write to
  * @note hint (optional) to dynamically pick the output file name (eg. java, csharp)

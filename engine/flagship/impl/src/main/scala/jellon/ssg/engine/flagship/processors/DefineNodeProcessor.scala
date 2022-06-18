@@ -5,9 +5,13 @@ import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.{MapNode, Node}
 
-/** for each key in the "define" node, copy it's attributes to the same key in the state
+/**
+ * for each key in the "define" node, copy it's attributes to the same key in the state
  * so for `"define": { "name": { "key": "value" } }` ; define "name" as a node in state, if it doesn't already exist
  * and copy "key" -> "value" into it. Other processors may then access `state.apply("name").attribute("key")`.
+ * <br/>If the value is "*" then it will dynamically copy everything in the same name as the key. Examples are found in
+ * the tests.
+ * <br/>define <= name
  */
 object DefineNodeProcessor extends AbstractNodeProcessor("define") {
   override def propagateOutput: Boolean =

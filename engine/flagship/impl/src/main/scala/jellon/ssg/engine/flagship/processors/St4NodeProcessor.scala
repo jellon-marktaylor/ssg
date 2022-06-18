@@ -7,14 +7,24 @@ import jellon.ssg.io.api.emptyString
 import jellon.ssg.io.spi.IUrlResources
 import jellon.ssg.node.api.INodeMap.NodeMapExt
 import jellon.ssg.node.api.{INode, INodeMap}
-import org.stringtemplate.v4.misc.STMessage
 import org.stringtemplate.v4._
+import org.stringtemplate.v4.misc.STMessage
 import sun.net.www.protocol.file.FileURLConnection
 
 import java.io.{IOException, OutputStreamWriter}
 import java.nio.file.NoSuchFileException
 import scala.io.Source
 
+/**
+ * st4 <= name
+ * @note stgroup (optional) the resource path and name of the stg file to use including the extension, or a directory of
+ *       stg files
+ * @note template (required) either the name of a template in stgroup or an ST4 template string if no stgroup
+ * @note output (required) the file or directory (if hint is used) to write to
+ * @note hint (optional) to dynamically pick the output file name (eg. java, csharp)
+ * @note using (optional defaults to output) name of the defined state to pass to velocity
+ * @note resolver (optional defaults to velocity) to resolve references in the instruction file
+ */
 object St4NodeProcessor extends AbstractNodeProcessor("st4") {
   @throws[IOException]
   override def process(state: INodeMap, key: Any, st4Node: INode, engine: IFlagshipEngine): Unit = {
