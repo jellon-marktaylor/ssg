@@ -1,14 +1,14 @@
 package jellon.ssg.engine.flagship.processors
 
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, INodeProcessor}
+import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.engine.flagship.st4.helpers.{Groups, Templates}
 import jellon.ssg.io.api.emptyString
 import jellon.ssg.io.spi.IUrlResources
-import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.api.INodeMap.NodeMapExt
+import jellon.ssg.node.api.{INode, INodeMap}
 import org.stringtemplate.v4.misc.STMessage
-import org.stringtemplate.v4.{AutoIndentWriter, ST, STErrorListener, STGroupDir, STGroupFile}
+import org.stringtemplate.v4._
 import sun.net.www.protocol.file.FileURLConnection
 
 import java.io.{IOException, OutputStreamWriter}
@@ -18,8 +18,9 @@ import scala.io.Source
 object St4NodeProcessor extends AbstractNodeProcessor("st4") {
   @throws[IOException]
   override def process(state: INodeMap, key: Any, st4Node: INode, engine: IFlagshipEngine): Unit = {
-    val st4: INodeMap = state("st4").attributes ++ st4Node.attributes
-    val output = engine.resolve(state, st4.string("output"))
+    val st4: INodeMap = state(name).attributes ++ st4Node.attributes
+    val resolverName = st4.optAttributeAs[String]("resolver").getOrElse(name)
+    val output = engine.resolve(resolverName, state, st4.string("output"))
     val hint = st4.optString("hint")
       .getOrElse(emptyString)
 
@@ -35,14 +36,14 @@ object St4NodeProcessor extends AbstractNodeProcessor("st4") {
 
       val attributes: INodeMap = using
         .map(usingString =>
-          engine.resolve(state, usingString)
+          engine.resolve(resolverName, state, usingString)
         )
         .map(usingString =>
           state(usingString).attributes
         )
         .getOrElse(state)
 
-      val resolvedAttributes = engine.resolver.resolveStringAttributes(state, attributes)
+      val resolvedAttributes = engine.resolver.resolveStringAttributes(resolverName, state, attributes)
 
       val errorHandler: STErrorListener = new STErrorListener() {
         override def compileTimeError(stMessage: STMessage): Unit =
