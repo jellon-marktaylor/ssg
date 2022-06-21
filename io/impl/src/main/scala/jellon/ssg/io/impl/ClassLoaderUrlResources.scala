@@ -44,7 +44,10 @@ object ClassLoaderUrlResources extends IUrlResources {
       .orElse(optSystemResource(resource))
 
   def optURL(cl: ClassLoader, resource: String): Option[URL] =
-    Option(cl).map(_.getResource(resource))
+    Option(cl)
+      .flatMap(loader =>
+        Option(loader.getResource(resource))
+      )
 
   def optSystemResource(resource: String): Option[URL] = {
     Option(ClassLoader.getSystemResource(resource))

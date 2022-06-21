@@ -28,8 +28,8 @@ object ResourcesTests {
     }
   ))
 
-  val subject: IResources =
-    new Resources(UrlResourcesTests.subject, InputStreamResourcesTests.subject, new ByteArrayOutputStreamResources(), handlers)
+  def subject(): ImplTestResources =
+    new ImplTestResources(UrlResourcesTests.subject, InputStreamResourcesTests.subject, new ByteArrayOutputStreamResources(), handlers)
 }
 
 class ResourcesTests extends AnyFunSpec {
@@ -38,105 +38,117 @@ class ResourcesTests extends AnyFunSpec {
 
   describe("openURL(resource: String)") {
     it("should return expected result when called for valid input") {
-      val actual = Contents.ofURL(subject.openURL(validResourcePath))
+      val actual = Contents.ofURL {
+        subject().openURL(validResourcePath)
+      }
       assertResult(expectedContents)(actual)
     }
 
     it("should throw an IOException when called for invalid input") {
       assertThrows[IOException] {
-        subject.openURL(invalidResourcePath)
+        subject().openURL(invalidResourcePath)
       }
     }
   }
 
   describe("optURL(resource: String)") {
     it("should return Some(URL) when called for valid input") {
-      val actual = Contents.ofURL(subject.optURL(validResourcePath))
+      val actual = Contents.ofURL{
+        subject().optURL(validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
     it("should return None when called for invalid input") {
-      val actual = subject.optURL(invalidResourcePath)
+      val actual = subject().optURL(invalidResourcePath)
       assert(actual.isEmpty)
     }
   }
 
   describe("optURL(resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = subject.optURL(validResourcePath, handledHint)
+      val actual = subject().optURL(validResourcePath, handledHint)
       assert(actual.isDefined)
       assert(actual.forall(Objects.isNull))
     }
 
     it("should return None when called for invalid input and handled hint") {
-      val actual = subject.optURL(invalidResourcePath, handledHint)
+      val actual = subject().optURL(invalidResourcePath, handledHint)
       assert(actual.isDefined)
       assert(actual.forall(Objects.isNull))
     }
 
     it("should return None when called for valid input and unhandled hint") {
-      val actual = Contents.ofURL(subject.optURL(validResourcePath, unhandledHint))
+      val actual = Contents.ofURL {
+        subject().optURL(validResourcePath, unhandledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
     it("should return None when called for invalid input and unhandled hint") {
-      val actual = subject.optURL(invalidResourcePath, unhandledHint)
+      val actual = subject().optURL(invalidResourcePath, unhandledHint)
       assert(actual.isEmpty)
     }
   }
 
   describe("openInputStream(resource: String)") {
     it("should return expected result when called for valid input") {
-      val actual = Contents.ofInputStream(subject.openInputStream(validResourcePath))
+      val actual = Contents.ofInputStream {
+        subject().openInputStream(validResourcePath)
+      }
       assertResult(expectedContents)(actual)
     }
 
     it("should throw an IOException when called for invalid input") {
       assertThrows[IOException] {
-        subject.openInputStream(invalidResourcePath)
+        subject().openInputStream(invalidResourcePath)
       }
     }
   }
 
   describe("optInputStream(resource: String)") {
     it("should return Some(InputStream) when called for valid input") {
-      val actual = Contents.ofInputStream(subject.optInputStream(validResourcePath))
+      val actual = Contents.ofInputStream {
+        subject().optInputStream(validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
     it("should return None when called for invalid input") {
-      val actual = subject.optInputStream(invalidResourcePath)
+      val actual = subject().optInputStream(invalidResourcePath)
       assert(actual.isEmpty)
     }
   }
 
   describe("optInputStream(resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = subject.optInputStream(validResourcePath, handledHint)
+      val actual = subject().optInputStream(validResourcePath, handledHint)
       assert(actual.isDefined)
       assert(actual.forall(Objects.isNull))
     }
 
     it("should return None when called for invalid input and handled hint") {
-      val actual = subject.optInputStream(invalidResourcePath, handledHint)
+      val actual = subject().optInputStream(invalidResourcePath, handledHint)
       assert(actual.isDefined)
       assert(actual.forall(Objects.isNull))
     }
 
     it("should return None when called for valid input and unhandled hint") {
-      val actual = Contents.ofInputStream(subject.optInputStream(validResourcePath, unhandledHint))
+      val actual = Contents.ofInputStream {
+        subject().optInputStream(validResourcePath, unhandledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
     it("should return None when called for invalid input and unhandled hint") {
-      val actual = subject.optInputStream(invalidResourcePath, unhandledHint)
+      val actual = subject().optInputStream(invalidResourcePath, unhandledHint)
       assert(actual.isEmpty)
     }
   }
 
   describe("optOutputStream(resource: String)") {
     it("should return expected result when called") {
-      val actual = subject.optOutputStream(outputFilePath)
+      val actual = subject().optOutputStream(outputFilePath)
       assert(actual.isDefined)
       assert(actual.exists(Objects.nonNull))
     }
@@ -144,13 +156,13 @@ class ResourcesTests extends AnyFunSpec {
 
   describe("optOutputStream(resource: String, hint: String)") {
     it("should return None when called for handled hint") {
-      val actual = subject.optOutputStream(outputFilePath, handledHint)
+      val actual = subject().optOutputStream(outputFilePath, handledHint)
       assert(actual.isDefined)
       assert(actual.exists(Objects.isNull))
     }
 
     it("should return None when called for unhandled hint") {
-      val actual = subject.optOutputStream(outputFilePath, unhandledHint)
+      val actual = subject().optOutputStream(outputFilePath, unhandledHint)
       assert(actual.isDefined)
       assert(actual.exists(Objects.nonNull))
     }

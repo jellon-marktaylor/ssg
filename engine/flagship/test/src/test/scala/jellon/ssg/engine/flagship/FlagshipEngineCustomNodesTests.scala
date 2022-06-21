@@ -2,8 +2,8 @@ package jellon.ssg.engine.flagship
 
 import jellon.ssg.engine.flagship.api.IFlagshipApplication.BASE_KEY
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.engine.flagship.spi.INodeProcessor._
+import jellon.ssg.engine.flagship.spi.{AbstractNodeProcessor, NodeProcessors}
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
@@ -69,8 +69,8 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
       BatNodeProcessor
     ))
 
-    val handler = new FlagshipApplication(null, null, processors)
-    handler.processInstructions(instructions)
+    new FlagshipTestApplication(processors)
+      .processInstructions(instructions)
 
     it("should only produce 2 outputs") {
       assert(testResults.size == 2)

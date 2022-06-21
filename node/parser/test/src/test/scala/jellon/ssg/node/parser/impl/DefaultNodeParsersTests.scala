@@ -1,25 +1,23 @@
 package jellon.ssg.node.parser.impl
 
-import jellon.ssg.io.impl.InputStreamResources
+import jellon.ssg.io.impl.ClassLoaderInputStreamResources
 import jellon.ssg.io.spi.IInputStreamResources
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.spi.{ListNode, Node}
 import org.scalatest.funspec.AnyFunSpec
 
-import java.io.File
 import scala.collection.immutable.ListMap
 import scala.io.Source
 
 object DefaultNodeParsersTests {
-  val basePath: String = {
-    val path = "src/test/resources/jellon/ssg/node/parser/impl"
-    if (new File("node/parser/test").isDirectory) s"node/parser/test/$path"
-    else path
-  }
+  val resources: IInputStreamResources =
+    ClassLoaderInputStreamResources(classOf[DefaultNodeParsersTests], classOf[DefaultNodeParsersTests]
+      .getPackage
+      .getName
+      .replace('.', '/'))
 
-  val resources: IInputStreamResources = new InputStreamResources(new File(basePath))
-
-  val subject: DefaultNodeParsers = new DefaultNodeParsers(resources)
+  val subject: DefaultNodeParsers =
+    new DefaultNodeParsers(resources)
 
   val expectedNode: INode = Node(ListMap[Any, Any](
     "booleanValue" -> true,

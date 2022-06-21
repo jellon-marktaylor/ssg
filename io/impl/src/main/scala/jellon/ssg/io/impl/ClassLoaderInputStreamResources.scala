@@ -38,6 +38,12 @@ object ClassLoaderInputStreamResources extends IInputStreamResources {
       }
     }
 
+  def apply(cl: Class[_]): IInputStreamResources =
+    apply(cl.getClassLoader)
+
+  def apply(cl: Class[_], prefix: String): IInputStreamResources =
+    apply(cl.getClassLoader, prefix)
+
   override def optInputStream(resource: String): Option[InputStream] =
     optInputStream(Thread.currentThread().getContextClassLoader, resource)
       .orElse(

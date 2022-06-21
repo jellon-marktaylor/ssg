@@ -17,7 +17,9 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
 
   describe("UrlResources.optURL(baseDir: File, resource: String)") {
     it("should return Some(URL) when called for valid input") {
-      val actual = Contents.ofURL(UrlResources.optURL(baseDir, validResourcePath))
+      val actual = Contents.ofURL {
+        UrlResources.optURL(baseDir, validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -29,7 +31,9 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
 
   describe("UrlResources.optFileURL(file: File)") {
     it("should return Some(URL) when called for valid input") {
-      val actual = Contents.ofURL(UrlResources.optFileURL(validFile))
+      val actual = Contents.ofURL {
+        UrlResources.optFileURL(validFile)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -41,7 +45,9 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
 
   describe("UrlResources.optFileURL(baseDir: File, resource: String)") {
     it("should return Some(URL) when called for valid input") {
-      val actual = Contents.ofURL(UrlResources.optFileURL(baseDir, validResourcePath))
+      val actual = Contents.ofURL {
+        UrlResources.optFileURL(baseDir, validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -54,13 +60,14 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
   describe("UrlResources.optSystemClassLoaderResource(resource: String)") {
     it("should return Some(URL) when called for valid input") {
       val actual = UrlResources.optSystemClassLoaderResource(validResourcePath)
-      if (basePath.startsWith("io/test/")) {
-        // sbt isn't putting this on the class path when we run tests from the root dir
+      if (ClassLoader.getSystemClassLoader.getResources(validResourcePath).hasMoreElements) {
+        val actualContents = Contents.ofURL {
+          actual
+        }
+        assert(actualContents.contains(expectedContents))
+      } else {
         logger.warn(s"missing $validResourcePath")
         assert(actual.isEmpty)
-      } else {
-        val contents = Contents.ofURL(actual)
-        assert(contents.contains(expectedContents))
       }
     }
 
@@ -73,13 +80,14 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
   describe("UrlResources.optSystemResource(resource: String)") {
     it("should return Some(URL) when called for valid input") {
       val actual = UrlResources.optSystemResource(validResourcePath)
-      if (basePath.startsWith("io/test/")) {
-        // sbt isn't putting this on the class path when we run tests from the root dir
+      if (ClassLoader.getSystemResources(validResourcePath).hasMoreElements) {
+        val actualContents = Contents.ofURL {
+          actual
+        }
+        assert(actualContents.contains(expectedContents))
+      } else {
         logger.warn(s"missing $validResourcePath")
         assert(actual.isEmpty)
-      } else {
-        val contents = Contents.ofURL(actual)
-        assert(contents.contains(expectedContents))
       }
     }
 
@@ -91,7 +99,9 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
 
   describe("openURL(resource: String)") {
     it("should return expected result when called for valid input") {
-      val actual = Contents.ofURL(subject.openURL(validResourcePath))
+      val actual = Contents.ofURL {
+        subject.openURL(validResourcePath)
+      }
       assertResult(expectedContents)(actual)
     }
 
@@ -104,7 +114,9 @@ class UrlResourcesTests extends AnyFunSpec with Logging {
 
   describe("optURL(resource: String)") {
     it("should return Some(URL) when called for valid input") {
-      val actual = Contents.ofURL(subject.optURL(validResourcePath))
+      val actual = Contents.ofURL {
+        subject.optURL(validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
