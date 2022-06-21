@@ -17,7 +17,9 @@ class InputStreamResourcesTests extends AnyFunSpec with Logging {
 
   describe("InputStreamResources.optInputStream(baseDir: File, resource: String)") {
     it("should return Some(InputStream) when called for valid input") {
-      val actual = Contents.ofInputStream(InputStreamResources.optInputStream(baseDir, validResourcePath))
+      val actual = Contents.ofInputStream {
+        InputStreamResources.optInputStream(baseDir, validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -29,7 +31,9 @@ class InputStreamResourcesTests extends AnyFunSpec with Logging {
 
   describe("InputStreamResources.optFileInputStream(file: File)") {
     it("should return Some(InputStream) when called for valid input") {
-      val actual = Contents.ofInputStream(InputStreamResources.optFileInputStream(validFile))
+      val actual = Contents.ofInputStream {
+        InputStreamResources.optFileInputStream(validFile)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -41,7 +45,9 @@ class InputStreamResourcesTests extends AnyFunSpec with Logging {
 
   describe("InputStreamResources.optFileInputStream(baseDir: File, resource: String)") {
     it("should return Some(InputStream) when called for valid input") {
-      val actual = Contents.ofInputStream(InputStreamResources.optFileInputStream(baseDir, validResourcePath))
+      val actual = Contents.ofInputStream {
+        InputStreamResources.optFileInputStream(baseDir, validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -53,7 +59,9 @@ class InputStreamResourcesTests extends AnyFunSpec with Logging {
 
   describe("openInputStream(resource: String)") {
     it("should return expected result when called for valid input") {
-      val actual = Contents.ofInputStream(subject.openInputStream(validResourcePath))
+      val actual = Contents.ofInputStream {
+        subject.openInputStream(validResourcePath)
+      }
       assertResult(expectedContents)(actual)
     }
 
@@ -66,7 +74,9 @@ class InputStreamResourcesTests extends AnyFunSpec with Logging {
 
   describe("optInputStream(resource: String)") {
     it("should return Some(InputStream) when called for valid input") {
-      val actual = Contents.ofInputStream(subject.optInputStream(validResourcePath))
+      val actual = Contents.ofInputStream {
+        subject.optInputStream(validResourcePath)
+      }
       assert(actual.contains(expectedContents))
     }
 

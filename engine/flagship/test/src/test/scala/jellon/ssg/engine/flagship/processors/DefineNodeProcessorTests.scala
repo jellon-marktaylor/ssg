@@ -1,9 +1,8 @@
 package jellon.ssg.engine.flagship.processors
 
+import jellon.ssg.engine.flagship.FlagshipTestEngine
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
-import jellon.ssg.engine.flagship.processors.DefineNodeProcessorTests.{engine, instructions}
 import jellon.ssg.engine.flagship.spi.INodeProcessor.instructionsNodeMap
-import jellon.ssg.engine.flagship.{FlagshipEngine, ResolverFactory}
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
@@ -23,12 +22,15 @@ object DefineNodeProcessorTests {
     )
   ))
 
-  val engine: IFlagshipEngine = new FlagshipEngine(null, ResolverFactory, Seq(DefineNodeProcessor))
+  val engine: IFlagshipEngine =
+    FlagshipTestEngine
 }
 
 class DefineNodeProcessorTests extends AnyFunSpec {
-  describe("test simple INodeMap") {
 
+  import DefineNodeProcessorTests._
+
+  describe("test simple INodeMap") {
     lazy val actual = engine.process(instructionsNodeMap(instructions), "define", instructions.attribute("define"))
 
     it("should contain a simple value") {

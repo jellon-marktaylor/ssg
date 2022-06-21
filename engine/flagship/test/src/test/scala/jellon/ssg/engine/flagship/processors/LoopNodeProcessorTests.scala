@@ -1,14 +1,14 @@
 package jellon.ssg.engine.flagship.processors
 
+import jellon.ssg.engine.flagship.FlagshipTestEngine
 import jellon.ssg.engine.flagship.api.IFlagshipEngine
 import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.engine.flagship.spi.INodeProcessor.{INPUT, INSTRUCTIONS}
-import jellon.ssg.engine.flagship.{FlagshipEngine, ResolverFactory}
 import jellon.ssg.node.api.{INode, INodeMap}
 import jellon.ssg.node.spi.Node
 import org.scalatest.funspec.AnyFunSpec
 
-class LoopNodeProcessorTests extends AnyFunSpec {
+object LoopNodeProcessorTests {
   val input: INode = Node(Map[Any, Any](
     "list" -> Seq(
       "li1",
@@ -20,9 +20,26 @@ class LoopNodeProcessorTests extends AnyFunSpec {
     )
   ))
 
+  class PrintNodeProcessor extends AbstractNodeProcessor("print") {
+    var output: Vector[String] = Vector.empty
+
+    override def process(state: INodeMap, key: Any, printNode: INode, engine: IFlagshipEngine): Unit = {
+      val raw: String = printNode.valueAs[String]
+      val node = engine.resolveNode(state, raw)
+      output = output :+ s"${node.valueAs[String]}"
+    }
+  }
+
+}
+
+class LoopNodeProcessorTests extends AnyFunSpec {
+
+  import LoopNodeProcessorTests._
+
   def runTestWithInstructions(elements: Seq[(Any, Any)]): Vector[String] = {
     val output = new PrintNodeProcessor
-    val engine: IFlagshipEngine = new FlagshipEngine(null, ResolverFactory, Seq(LoopNodeProcessor, output))
+    val engine: IFlagshipEngine =
+      new FlagshipTestEngine(Seq(LoopNodeProcessor, output))
 
     val instructions: INode = Node(Map(
       "loop" -> Map(elements: _*)
@@ -65,15 +82,4 @@ class LoopNodeProcessorTests extends AnyFunSpec {
       assert(output.contains("value2"))
     }
   }
-
-  class PrintNodeProcessor extends AbstractNodeProcessor("print") {
-    var output: Vector[String] = Vector.empty
-
-    override def process(state: INodeMap, key: Any, printNode: INode, engine: IFlagshipEngine): Unit = {
-      val raw: String = printNode.valueAs[String]
-      val node = engine.resolveNode(state, raw)
-      output = output :+ s"${node.valueAs[String]}"
-    }
-  }
-
 }

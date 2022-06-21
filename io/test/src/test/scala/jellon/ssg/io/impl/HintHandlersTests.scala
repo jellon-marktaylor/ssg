@@ -52,7 +52,9 @@ class HintHandlersTests extends AnyFunSpec {
 
   describe("HintHandlers.optURL(handlers: Seq[IHintHandler], resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = Contents.ofURL(HintHandlers.optURL(handlers, validResourcePath, handledHint))
+      val actual = Contents.ofURL {
+        HintHandlers.optURL(handlers, validResourcePath, handledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -74,7 +76,9 @@ class HintHandlersTests extends AnyFunSpec {
 
   describe("HintHandlers.optInputStream(handlers: Seq[IHintHandler], resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = Contents.ofInputStream(HintHandlers.optInputStream(handlers, validResourcePath, handledHint))
+      val actual = Contents.ofInputStream {
+        HintHandlers.optInputStream(handlers, validResourcePath, handledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -108,7 +112,9 @@ class HintHandlersTests extends AnyFunSpec {
 
   describe("optURL(resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = Contents.ofURL(subject.optURL(validResourcePath, handledHint))
+      val actual = Contents.ofURL {
+        subject.optURL(validResourcePath, handledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
@@ -130,7 +136,9 @@ class HintHandlersTests extends AnyFunSpec {
 
   describe("optInputStream(resource: String, hint: String)") {
     it("should return Some(InputStream) when called for valid input and handled hint") {
-      val actual = Contents.ofInputStream(subject.optInputStream(validResourcePath, handledHint))
+      val actual = Contents.ofInputStream {
+        subject.optInputStream(validResourcePath, handledHint)
+      }
       assert(actual.contains(expectedContents))
     }
 
