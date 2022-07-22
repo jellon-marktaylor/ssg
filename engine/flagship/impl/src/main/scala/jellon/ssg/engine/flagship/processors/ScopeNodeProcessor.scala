@@ -12,11 +12,11 @@ object ScopeNodeProcessor extends AbstractNodeProcessor("scope") {
   override def propagateOutput: Boolean =
     false
 
-  override def output(state: INodeMap, key: Any, node: INode, engine: IFlagshipEngine): INode =
-    super.output(state, key, node, engine)
+  override def output(engine: IFlagshipEngine, state: INodeMap, key: Any, node: INode): INode =
+    super.output(engine, state, key, node)
 
-  override def process(state: INodeMap, key: Any, scopeNode: INode, engine: IFlagshipEngine): Unit = {
-    this.processEachChild(state, key, scopeNode.children, engine)
+  override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, scopeNode: INode): Unit = {
+    processEachChild(engine, state, key, scopeNode.children)
 
     scopeNode
       .attributes

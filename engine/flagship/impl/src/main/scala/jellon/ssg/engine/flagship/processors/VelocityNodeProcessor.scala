@@ -19,7 +19,7 @@ import java.io.{Closeable, IOException, OutputStream}
  */
 object VelocityNodeProcessor extends AbstractNodeProcessor("velocity") {
   @throws[IOException]
-  override def process(state: INodeMap, key: Any, velocityNode: INode, engine: IFlagshipEngine): Unit = {
+  override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, velocityNode: INode): Unit = {
     val properties: INodeMap =
       state(name).attributes ++ velocityNode.attributes
     val resolverName: String = properties

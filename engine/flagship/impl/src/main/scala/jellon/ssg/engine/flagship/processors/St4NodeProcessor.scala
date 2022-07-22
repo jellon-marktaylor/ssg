@@ -27,7 +27,7 @@ import scala.io.Source
  */
 object St4NodeProcessor extends AbstractNodeProcessor("st4") {
   @throws[IOException]
-  override def process(state: INodeMap, key: Any, st4Node: INode, engine: IFlagshipEngine): Unit = {
+  override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, st4Node: INode): Unit = {
     val st4: INodeMap = state(name).attributes ++ st4Node.attributes
     val resolverName = st4.optAttributeAs[String]("resolver").getOrElse(name)
     val output = engine.resolve(resolverName, state, st4.string("output"))

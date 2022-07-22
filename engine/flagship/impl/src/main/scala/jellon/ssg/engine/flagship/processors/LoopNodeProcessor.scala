@@ -20,9 +20,10 @@ object LoopNodeProcessor extends AbstractNodeProcessor("loop") with Logging {
   override def propagateOutput: Boolean =
     false
 
-  override def output(state: INodeMap, key: Any, node: INode, engine: IFlagshipEngine): INode = super.output(state, key, node, engine)
+  override def output(engine: IFlagshipEngine, state: INodeMap, key: Any, node: INode): INode =
+    super.output(engine, state, key, node)
 
-  override def process(state: INodeMap, key: Any, loopNode: INode, engine: IFlagshipEngine): Unit = {
+  override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, loopNode: INode): Unit = {
     val nameOfLoopNode: String = loopNode.attributeAs[String]("foreach")
     val loopOverNode: INode = engine.resolveNode(state, nameOfLoopNode)
 
@@ -50,7 +51,7 @@ object LoopNodeProcessor extends AbstractNodeProcessor("loop") with Logging {
     val (key, value) = kv
     val newState = this.newState(state, loopNode, key, value)
     logger.debug(s"$this =>\n(key, value) = ($key, $value)\nstate: $state\noutput: $newState")
-    ScopeNodeProcessor.process(newState, "scope", loopNode.attribute("do"), engine)
+    ScopeNodeProcessor.process(engine, newState, "scope", loopNode.attribute("do"))
   }
 
   @inline

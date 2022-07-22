@@ -14,11 +14,11 @@ object IFlagshipApplication {
      * @see [[jellon.ssg.engine.flagship.api.IFlagshipEngine#process(jellon.ssg.node.api.INodeMap, java.lang.Object, jellon.ssg.node.api.INode)]]
      */
     @inline
-    def process(state: INodeMap, key: Any, node: INode): Unit =
+    def process(state: INodeMap, key: Any, node: INode): INodeMap =
       self.createEngine.process(state, key, node)
 
     @inline
-    def processInstructions(instructions: INode): Unit =
+    def processInstructions(instructions: INode): INodeMap =
       process(
         new NodeMap(Map[Any, INode](INSTRUCTIONS -> instructions)),
         BASE_KEY,
@@ -26,7 +26,7 @@ object IFlagshipApplication {
       )
 
     @inline
-    def processInstructionsWithInput(instructions: INode, input: INode): Unit = process(
+    def processInstructionsWithInput(instructions: INode, input: INode): INodeMap = process(
       new NodeMap(Map[Any, INode](
         INSTRUCTIONS -> instructions,
         INPUT -> input,

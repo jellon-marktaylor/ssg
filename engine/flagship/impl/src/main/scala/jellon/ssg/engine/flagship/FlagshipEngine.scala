@@ -9,12 +9,11 @@ class FlagshipEngine(override val resources: IResources, override val resolver: 
   extends IFlagshipEngine {
 
   def this(resources: IResources, resolver: IResolverFactory, processors: INodeProcessors) =
-    this(resources, resolver, processors.apply)
+    this(resources, resolver, processors.apply())
 
   override def process(state: INodeMap, key: Any, node: INode): INodeMap =
     processors
-      .filter(_.handles(key, node))
       .foldLeft[INodeMap](state)((acc, processor) =>
-        processor.apply(acc, key, node, this)
+        processor.process(this, acc, key, node)
       )
 }

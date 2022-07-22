@@ -23,7 +23,7 @@ object LoopNodeProcessorTests {
   class PrintNodeProcessor extends AbstractNodeProcessor("print") {
     var output: Vector[String] = Vector.empty
 
-    override def process(state: INodeMap, key: Any, printNode: INode, engine: IFlagshipEngine): Unit = {
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, printNode: INode): Unit = {
       val raw: String = printNode.valueAs[String]
       val node = engine.resolveNode(state, raw)
       output = output :+ s"${node.valueAs[String]}"

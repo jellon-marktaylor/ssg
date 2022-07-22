@@ -25,7 +25,7 @@ object ScopeNodeProcessorTests {
   ))
 
   object PrintNodeProcessor extends AbstractNodeProcessor("print") {
-    override def process(state: INodeMap, key: Any, print: INode, engine: IFlagshipEngine): Unit =
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, print: INode): Unit =
       print
         .children
         .toSeq

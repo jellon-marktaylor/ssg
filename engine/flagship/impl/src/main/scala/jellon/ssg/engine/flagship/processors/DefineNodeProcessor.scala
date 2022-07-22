@@ -17,7 +17,7 @@ object DefineNodeProcessor extends AbstractNodeProcessor("define") {
   override def propagateOutput: Boolean =
     true
 
-  override def output(state: INodeMap, key: Any, defineNode: INode, engine: IFlagshipEngine): INode =
+  override def output(engine: IFlagshipEngine, state: INodeMap, key: Any, defineNode: INode): INode =
     defineNode.keySet
       .foldLeft(INode.empty)((r, nameOfNodeToAddAttributesTo) => {
         val curAttrs: INode = state.attribute(nameOfNodeToAddAttributesTo)

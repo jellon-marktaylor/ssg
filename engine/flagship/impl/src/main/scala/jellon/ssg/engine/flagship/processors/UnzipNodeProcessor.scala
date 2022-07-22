@@ -17,7 +17,7 @@ import java.util.zip.ZipInputStream
  * @note resolver (optional) if provided, uses the named resolver to resolve strings
  */
 object UnzipNodeProcessor extends AbstractNodeProcessor("unzip") {
-  override def process(state: INodeMap, key: Any, node: INode, engine: IFlagshipEngine): Unit = {
+  override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, node: INode): Unit = {
     val resolverName =
       node.optAttributeAs[String]("resolver")
     val to =

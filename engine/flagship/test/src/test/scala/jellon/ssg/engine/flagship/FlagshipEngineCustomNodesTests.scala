@@ -86,7 +86,7 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
   }
 
   object RootNodeProcessor extends AbstractNodeProcessor(BASE_KEY) {
-    override def process(state: INodeMap, key: Any, rootNode: INode, engine: IFlagshipEngine): Unit =
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, rootNode: INode): Unit =
       engine.process(state, "foo", rootNode.attribute("foo"))
   }
 
@@ -94,7 +94,7 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
     override def propagateOutput: Boolean =
       true
 
-    override def output(state: INodeMap, key: Any, list: INode, engine: IFlagshipEngine): INode =
+    override def output(engine: IFlagshipEngine, state: INodeMap, key: Any, list: INode): INode =
       Node(outputNodeMap(list))
   }
 
@@ -104,7 +104,7 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
   }
 
   object FooNodeProcessor extends AbstractNodeProcessor("foo") {
-    override def process(state: INodeMap, key: Any, foo: INode, engine: IFlagshipEngine): Unit = {
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, foo: INode): Unit = {
       val dictNode: INodeMap = engine.process(state, "dictionary", foo.attribute("dictionary"))
       val listNode: INodeMap = engine.process(state, "list", foo.attribute("list"))
 
@@ -117,12 +117,12 @@ class FlagshipEngineCustomNodesTests extends AnyFunSpec {
   }
 
   object BarNodeProcessor extends AbstractNodeProcessor("foo/bar") {
-    override def process(state: INodeMap, key: Any, bar: INode, engine: IFlagshipEngine): Unit =
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, bar: INode): Unit =
       engine.process(state, s"$name/bat", bar.attribute("bat"))
   }
 
   object BatNodeProcessor extends AbstractNodeProcessor("foo/bar/bat") {
-    override def process(state: INodeMap, key: Any, bat: INode, engine: IFlagshipEngine): Unit = {
+    override def execute(engine: IFlagshipEngine, state: INodeMap, key: Any, bat: INode): Unit = {
       val dictNode = state("dictionary") // ("a" -> 1), ("b" -> 3)
       val listNode = state("list") // "world", "ignored", "bar"
 
