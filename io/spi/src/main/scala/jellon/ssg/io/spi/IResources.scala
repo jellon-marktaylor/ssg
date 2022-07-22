@@ -5,19 +5,40 @@ import java.net.URL
 import scala.reflect.ClassTag
 
 object IResources {
-  def relativeResource(path: String, resource: String): String =
-    s"$path$resource"
+  /**
+   * scala has a limitation such that you can't have both an "object" declaration and a resource path that mirrors the
+   * package and class names. The work-around is to have a directory that has the package as it's name, including the
+   * periods '.'. This is the same effect as in most IDEs where you can "flatten" a directory structure.
+   *
+   * @return "packageName"/"className". Eg (String.class => "java.lang/String"
+   */
+  def relativeResource(clz: Class[_]): String = {
+    val packageName = clz.getPackage.getName
+    val className = clz.getSimpleName
+    s"$packageName/$className"
+  }
 
+  def relativeResource(self: AnyRef): String =
+    relativeResource(self.getClass)
+
+  def relativeResourceOf[A: ClassTag]: String =
+    relativeResource(implicitly[ClassTag[A]].runtimeClass)
+
+  /**
+   * scala has a limitation such that you can't have both an "object" declaration and a resource path that mirrors the
+   * package and class names. The work-around is to have a directory that has the package as it's name, including the
+   * periods '.'. This is the same effect as in most IDEs where you can "flatten" a directory structure.
+   *
+   * @return "packageName"/"className". Eg ((String.class, "subdir") => "java.lang/String/subdir"
+   */
   def relativeResource(clz: Class[_], resource: String): String =
-    relativeResource(s"${clz.getPackage.getName.replace('.', '/')}/", resource)
+    s"${relativeResource(clz)}/$resource}"
+
+  def relativeResource(self: AnyRef, resource: String): String =
+    relativeResource(self.getClass, resource)
 
   def relativeResourceOf[A: ClassTag](resource: String): String =
     relativeResource(implicitly[ClassTag[A]].runtimeClass, resource)
-
-  def relativeResource(self: AnyRef, resource: String): String = self match {
-    case path: String => relativeResource(path, resource)
-    case _ => relativeResource(self.getClass, resource)
-  }
 }
 
 /** All sorts of methods to get an (instance or Option) of (URL, InputStream, or OutputStream) (with or without) a hint */

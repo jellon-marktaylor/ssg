@@ -17,7 +17,7 @@ class FlagshipEngineExample1Tests extends AnyFunSpec {
       new ByteArrayOutputStreamResources()
 
     override def configure(): Unit = {
-      val path = IResources.relativeResource(this, "example1")
+      val path = IResources.relativeResourceOf[FlagshipEngineExample1Tests]
       bindTo[IUrlResources](() => ClassLoaderUrlResources(path))
       bindTo[IInputStreamResources](() => ClassLoaderInputStreamResources(path))
       bindTo[IOutputStreamResources](() => baosStreamResources)

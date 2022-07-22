@@ -6,18 +6,19 @@ import jellon.ssg.io.impl.{ByteArrayOutputStreamResources, ClassLoaderInputStrea
 import jellon.ssg.io.spi.{IInputStreamResources, IOutputStreamResources, IResources, IUrlResources}
 import jellon.ssg.node.api.INode
 import jellon.ssg.node.parser.impl.json.JsonParser
+import org.scalatest.GivenWhenThen
 import org.scalatest.funspec.AnyFunSpec
 
 import scala.io.Source
 
-class FlagshipEngineExample2Tests extends AnyFunSpec {
+class FlagshipEngineExample2Tests extends AnyFunSpec with GivenWhenThen {
 
   object FlagshipEngineExample2TestsGuiceModule extends AbstractGuiceModule {
     val baosStreamResources: ByteArrayOutputStreamResources =
       new ByteArrayOutputStreamResources()
 
     override def configure(): Unit = {
-      val path = IResources.relativeResource(this, "example2")
+      val path = IResources.relativeResourceOf[FlagshipEngineExample2Tests]
       bindTo[IUrlResources](() => ClassLoaderUrlResources(path))
       bindTo[IInputStreamResources](() => ClassLoaderInputStreamResources(path))
       bindTo[IOutputStreamResources](() => baosStreamResources)
