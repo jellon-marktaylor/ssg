@@ -16,14 +16,14 @@ object INode {
       .isDefined
 
     @inline
-    def optValueAs[A](clz: Class[A]): Option[A] = self
+    def optValueAs[B](clz: Class[B]): Option[B] = self
       .optValue
       .filter(clz.isInstance)
       .map(clz.cast)
 
     @inline
-    def optValueAs[A: ClassTag]: Option[A] =
-      optValueAs(implicitly[ClassTag[A]].runtimeClass.asInstanceOf[Class[A]])
+    def optValueAs[B: ClassTag]: Option[B] =
+      optValueAs(implicitly[ClassTag[B]].runtimeClass.asInstanceOf[Class[B]])
 
     @inline
     @throws[NoSuchElementException]
@@ -33,14 +33,14 @@ object INode {
     }
 
     @inline
-    def valueAs[A](clz: Class[A]): A = optValueAs[A](clz) match {
+    def valueAs[B](clz: Class[B]): B = optValueAs[B](clz) match {
       case Some(value) => value
       case None => throw new NoSuchElementException(this + " does not contain a value of type " + clz.getName)
     }
 
     @inline
-    def valueAs[A: ClassTag]: A =
-      valueAs(implicitly[ClassTag[A]].runtimeClass.asInstanceOf[Class[A]])
+    def valueAs[B: ClassTag]: B =
+      valueAs(implicitly[ClassTag[B]].runtimeClass.asInstanceOf[Class[B]])
 
     @inline
     def setValue(optValue: Option[_]): INode =
@@ -80,69 +80,7 @@ object INode {
     def addChildren(children: IterableOnce[INode]): INode =
       setChildren(self.children.addChildren(children))
 
-    // ATTRIBUTES
-    @inline
-    def hasAttributes: Boolean = self
-      .attributes
-      .nonEmpty
-
-    @inline
-    def keySet: Set[Any] = self
-      .attributes
-      .keySet
-
-    @inline
-    def attribute(name: Any): INode = self
-      .attributes
-      .attribute(name)
-
-    @inline
-    def attributeAs[A](name: Any, clz: Class[A]): A = self
-      .attributes
-      .attributeAs[A](name, clz)
-
-    @inline
-    def attributeAs[A: ClassTag](name: Any): A = self
-      .attributes
-      .attributeAs[A](name)
-
-    @inline
-    def optAttribute(name: Any): Option[INode] = self
-      .attributes
-      .optAttribute(name)
-
-    @inline
-    def optAttributeAs[A](name: Any, clz: Class[A]): Option[A] = self
-      .attributes
-      .optAttributeAs[A](name, clz)
-
-    @inline
-    def optAttributeAs[A: ClassTag](name: Any): Option[A] =
-      optAttributeAs[A](name, implicitly[ClassTag[A]].runtimeClass.asInstanceOf[Class[A]])
-
-    @inline
-    def replaceAttributes(attributes: INodeMap): INode =
-      Node(self.optValue, self.children, attributes)
-
-    @inline
-    def setAttribute(attribute: (Any, INode)): INode =
-      replaceAttributes(self.attributes + attribute)
-
-    @inline
-    def setAttribute(name: Any, attribute: INode): INode =
-      replaceAttributes(self.attributes + (name, attribute))
-
-    @inline
-    def setAttribute(name: Any, value: Any): INode =
-      setAttribute(name, Node(value))
-
-    @inline
-    def replaceAttribute(name: Any, mapper: INode => INode): INode =
-      setAttribute(name, mapper(self.attribute(name)))
-
-    @inline
-    def addAttributes(attributes: IterableOnce[(Any, INode)]): INode =
-      replaceAttributes(self.attributes ++ attributes)
+    // MISC
 
     @inline
     def merge(other: INode): INode = Node(
@@ -191,7 +129,7 @@ object INode {
   }
 }
 
-trait INode {
+trait INode extends IAttributeNode {
   def optValue: Option[_]
 
   def children: INodeList
@@ -207,4 +145,24 @@ trait INode {
       case _ =>
         false
     }
+
+  ////////////
+  // ACCESSORS
+  ////////////
+
+  def hasAttributes: Boolean = attributes
+    .nonEmpty
+
+  def keySet: Set[Any] = attributes
+    .keySet
+
+  def optAttribute(name: Any): Option[INode] = attributes
+    .optAttribute(name)
+
+  ////////////
+  // MUTATORS
+  ////////////
+
+  def replaceAttributes(attributes: INodeMap): INode =
+    Node(optValue, children, attributes)
 }

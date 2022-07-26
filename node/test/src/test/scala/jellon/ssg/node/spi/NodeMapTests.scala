@@ -103,6 +103,31 @@ class NodeMapTests extends AnyFunSpec {
       assert(actual.attribute(spareKey) === INode.empty)
     }
 
+    it("should mergePathAttribute(path: String, value: INode, mergeFunction: (INode, INode) => INode)") {
+      val subject: INodeMap = Node(
+        "a" -> Map(
+          "b" -> Map(
+            "foo" -> "bar"
+          )
+        )
+      ).attributes
+      val value: INode = Node("hello world")
+
+      val expectedResult = Node(
+        "a" -> Map(
+          "b" -> Map(
+            "foo" -> "bar",
+            "c" -> Map(
+              "d" -> "hello world"
+            )
+          )
+        )
+      ).attributes
+
+      val actualResult = subject.mergePathAttribute("a.b.c.d", value)
+      assertResult(expectedResult)(actualResult)
+    }
+
     it("should +(kv: (Any, INode))") {
       val kv: (Any, INode) = spareKey -> spareNode
       val actual = subject + kv
