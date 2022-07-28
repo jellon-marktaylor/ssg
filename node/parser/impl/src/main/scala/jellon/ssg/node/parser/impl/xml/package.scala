@@ -13,49 +13,49 @@ package object xml extends Logging {
   // value + value
   private def mergeNode(lhs: ValueNode, rhs: ValueNode): INode =
     INode.mergeOptions(lhs.optValue, rhs.optValue) match {
-      case Some(value) => Node(value)
+      case Some(value) => INode(value)
       case _ => INode.empty
     }
 
   // value + list
   private def mergeNode(lhs: ValueNode, rhs: ListNode): INode =
-    Node(rhs.elements.prepended(lhs))
+    INode(rhs.elements.prepended(lhs))
 
   private def mergeNode(lhs: ListNode, rhs: ValueNode): INode =
-    Node(lhs.elements.appended(rhs))
+    INode(lhs.elements.appended(rhs))
 
   // value + map
   private def mergeNode(lhs: ValueNode, rhs: MapNode): INode =
-    Node(Seq(lhs, rhs))
+    INode(Seq(lhs, rhs))
 
   private def mergeNode(lhs: MapNode, rhs: ValueNode): INode =
-    Node(Seq(lhs, rhs))
+    INode(Seq(lhs, rhs))
 
   // list + list
   private def mergeNode(lhs: ListNode, rhs: ListNode): INode =
-    Node(lhs.elements ++ rhs.elements)
+    INode(lhs.elements ++ rhs.elements)
 
   // list + map
   private def mergeNode(lhs: ListNode, rhs: MapNode): INode =
-    Node(lhs.elements.appended(rhs))
+    INode(lhs.elements.appended(rhs))
 
   private def mergeNode(lhs: MapNode, rhs: ListNode): INode =
-    Node(rhs.elements.prepended(lhs))
+    INode(rhs.elements.prepended(lhs))
 
   // map + map
   private def mergeNode(lhs: MapNode, rhs: MapNode): INode = {
-    val sharedKeys: Set[Any] = lhs.keySet.intersect(rhs.keySet)
+    val sharedKeys = lhs.keySet.intersect(rhs.keySet)
     if (sharedKeys.isEmpty)
       lhs ++ rhs
     else {
-      val result = rhs.elements.keySet.foldLeft[INode](lhs)((acc, key) => {
+      val result = rhs.toMap.keySet.foldLeft[INode](lhs)((acc, key) => {
         if (sharedKeys.contains(key)) {
           val lhsAttribute = lhs.attribute(key)
           val rhsAttribute = rhs.attribute(key)
           val merged = mergeNodes(lhsAttribute, rhsAttribute)
           acc.setAttribute(key, merged)
         } else {
-          val value = rhs.elements(key)
+          val value = rhs.toMap(key)
           acc.setAttribute(key, value)
         }
       })
@@ -141,7 +141,7 @@ package object xml extends Logging {
       val result = self.getNodeType match {
         case DomNode.ATTRIBUTE_NODE =>
           logger.trace(s"$indent${self.getTextContent} <= $nodeName (attribute)")
-          node.setAttribute(nodeName, Node(asValue))
+          node.setAttribute(nodeName, INode(asValue))
         case DomNode.TEXT_NODE =>
           logger.trace(s"$indent${self.getTextContent} <= $nodeName (text)")
           node.setValue(INode.mergeOptions(node.optValue, Some(asValue)))
@@ -162,7 +162,7 @@ package object xml extends Logging {
 
             if (r == INode.empty) {
               logger.trace(s"$indent$nodeName <= $nodeName (element)")
-              node.setAttribute(nodeName, Node(asValue))
+              node.setAttribute(nodeName, INode(asValue))
             } else {
               node.optAttribute(nodeName) match {
                 case Some(value) =>

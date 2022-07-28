@@ -6,7 +6,7 @@ import jellon.ssg.node.api.INode
 import java.util.Locale
 
 package object st4 {
-  def getProperty(node: INode, property: Any): AnyRef =
+  def getProperty(node: INode, property: AnyRef): AnyRef =
     NodeModelAdapter.getProperty(node, property)
 
   def toString(value: INode, formatString: String, locale: Locale): String =

@@ -5,7 +5,6 @@ import jellon.ssg.engine.flagship.spi.AbstractNodeProcessor
 import jellon.ssg.engine.flagship.st4.helpers.{Groups, Templates}
 import jellon.ssg.io.api.emptyString
 import jellon.ssg.io.spi.IUrlResources
-import jellon.ssg.node.api.INodeMap.NodeMapExt
 import jellon.ssg.node.api.{INode, INodeMap}
 import org.stringtemplate.v4._
 import org.stringtemplate.v4.misc.STMessage

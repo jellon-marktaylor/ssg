@@ -27,7 +27,7 @@ class YamlParser(parser: Yaml, resourceReader: IInputStreamResources) extends Ab
     val input = resourceReader.openInputStream(resourceName)
     try {
       val document: java.util.Map[Any, Any] = parser.load(input)
-      Node.apply(document.asInstanceOf[Any])
+      INode(document.asInstanceOf[Any])
     } catch {
       case ex: RuntimeException =>
         ex.printStackTrace()

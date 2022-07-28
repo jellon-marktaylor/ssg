@@ -33,7 +33,7 @@ class ST4Resolver(dictionary: INodeMap) extends IResolver {
       asNode(path.substring(1, path.length - 1))
     } else if (path.contains('.')) {
       path.split("\\.")
-        .foldLeft(Node(dictionary))((map, attr) => map.attribute(attr))
+        .foldLeft(INode(dictionary))((map, attr) => map.attribute(attr))
     } else {
       dictionary(path)
     }

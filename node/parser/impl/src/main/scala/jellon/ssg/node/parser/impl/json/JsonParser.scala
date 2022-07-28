@@ -38,13 +38,13 @@ object JsonParser {
   def apply(jackson: ObjectMapper, resourceReader: IInputStreamResources): JsonParser = new JsonParser(jackson, resourceReader)
 
   def jsonToNode(json: JsonNode): INode = {
-    if (json.isArray) Node(listNode(json.elements()))
-    else if (json.isObject) Node(mapNode(json.fields()))
-    else if (json.isTextual) Node(json.textValue())
-    else if (json.isNumber) Node(json.numberValue())
-    else if (json.isBoolean) Node(json.booleanValue())
-    else if (json.isNull) Node.empty
-    else if (json.isBinary) Node(json.binaryValue())
+    if (json.isArray) INode(listNode(json.elements()))
+    else if (json.isObject) INode(mapNode(json.fields()))
+    else if (json.isTextual) INode(json.textValue())
+    else if (json.isNumber) INode(json.numberValue())
+    else if (json.isBoolean) INode(json.booleanValue())
+    else if (json.isNull) INode.empty
+    else if (json.isBinary) INode(json.binaryValue())
     else throw new UnsupportedOperationException("Unknown or Unsupported JSON node type: " + json.getNodeType)
   }
 

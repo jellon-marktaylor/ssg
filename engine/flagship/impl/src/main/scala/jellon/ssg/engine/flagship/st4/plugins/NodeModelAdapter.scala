@@ -5,10 +5,10 @@ import jellon.ssg.node.spi.{ListNode, ValueNode}
 import org.stringtemplate.v4.{Interpreter, ModelAdaptor, ST}
 
 object NodeModelAdapter extends ModelAdaptor[INode] {
-  override def getProperty(interpreter: Interpreter, st: ST, node: INode, property: Any, propertyName: String): AnyRef =
+  override def getProperty(interpreter: Interpreter, st: ST, node: INode, property: AnyRef, propertyName: String): AnyRef =
     getProperty(Option(node).getOrElse(INode.empty), property)
 
-  def getProperty(node: INode, property: Any): AnyRef = {
+  def getProperty(node: INode, property: AnyRef): AnyRef = {
     property match {
       case index: Number =>
         node.children(index.intValue())

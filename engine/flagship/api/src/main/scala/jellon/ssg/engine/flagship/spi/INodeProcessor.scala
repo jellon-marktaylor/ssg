@@ -15,13 +15,13 @@ object INodeProcessor {
   val OUTPUT: String = "output"
 
   def instructionsNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](INSTRUCTIONS -> value))
+    NodeMap(INSTRUCTIONS, value)
 
   def inputNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](INPUT -> value))
+    NodeMap(INPUT, value)
 
   def outputNodeMap(value: INode): INodeMap =
-    new NodeMap(Map[Any, INode](OUTPUT -> value))
+    NodeMap(OUTPUT, value)
 
   implicit class INodeProcessorNodeMapExtensions(self: INodeMap) {
     def instructions: INode = self(INSTRUCTIONS)

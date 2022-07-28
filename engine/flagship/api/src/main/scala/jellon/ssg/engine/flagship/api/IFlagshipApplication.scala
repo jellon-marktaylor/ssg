@@ -20,14 +20,14 @@ object IFlagshipApplication {
     @inline
     def processInstructions(instructions: INode): INodeMap =
       process(
-        new NodeMap(Map[Any, INode](INSTRUCTIONS -> instructions)),
+        NodeMap(INSTRUCTIONS, instructions),
         BASE_KEY,
         instructions
       )
 
     @inline
     def processInstructionsWithInput(instructions: INode, input: INode): INodeMap = process(
-      new NodeMap(Map[Any, INode](
+      INodeMap.apply(Map[AnyRef, INode](
         INSTRUCTIONS -> instructions,
         INPUT -> input,
       )),

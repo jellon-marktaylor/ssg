@@ -1,64 +1,55 @@
 package jellon.ssg.node.api
 
-import jellon.ssg.node.spi.{Node, NodeList}
+import jellon.ssg.node.api.supplimentary.{EmptyNodeList, ListHelper}
+import jellon.ssg.node.spi.NodeList
 
-object INodeList {
-  val empty: INodeList = EmptyNodeList
+trait INodeList extends IParentNode[INodeList] with java.lang.Iterable[INode] {
+  override def children: INodeList = this
 
-  implicit class NodeListExt(self: INodeList) {
-    def toSeq: Seq[INode] = self match {
-      case nodeList: NodeList => nodeList.elements
-      case _ => Range(0, self.size).foldLeft(Vector.empty[INode])((v, index) => {
-        val node = self.optIndex(index)
-        if (node.isDefined) v :+ node.get
-        else v
-      })
-    }
+  def asJava: java.util.List[Object] =
+    ListHelper.asJava(toSeq)
 
-    @inline
-    def setChildren(children: Seq[INode]): INodeList =
-      new NodeList(children)
+  def elements: Seq[INode] = this
+    .toSeq
 
-    @inline
-    def addChild(child: INode): INodeList =
-      new NodeList(self.toSeq :+ child)
+  def size: Int = this
+    .elements
+    .size
 
-    @inline
-    def :+(child: INode): INodeList = addChild(child)
+  def isEmpty: Boolean = this
+    .elements
+    .isEmpty
 
-    @inline
-    def addChildren(children: IterableOnce[INode]): INodeList =
-      setChildren(self.toSeq ++ children)
+  def nonEmpty: Boolean = this
+    .elements
+    .nonEmpty
 
-    @inline
-    def ++(nodes: IterableOnce[INode]): INodeList =
-      addChildren(nodes)
+  def apply(index: Int): INode =
+    optIndex(index).getOrElse(INode.empty)
 
-    @inline
-    def ++(nodes: INodeList): INodeList =
-      addChildren(nodes.toSeq)
-  }
+  override def setChildren(children: INodeList): INodeList =
+    children
 
-  object NodeIterableConverter {
-    def toNodeIterator(elements: IterableOnce[_]): Iterator[INode] = elements.iterator.map(Node(_))
-  }
+  def :+(child: INode): INodeList = addChild(child)
 
-  implicit class NodeIterableConverter(self: IterableOnce[_]) {
-    def toNodeIterator: Iterator[INode] = NodeIterableConverter.toNodeIterator(self)
-  }
+  def ++(nodes: INodeList): INodeList =
+    addChildren(nodes.toSeq)
 
+  def ++(nodes: IterableOnce[INode]): INodeList =
+    addChildren(nodes)
+
+  override def iterator: java.util.Iterator[INode] =
+    ListHelper.toNodeIteratorJava(toSeq)
 }
 
-trait INodeList extends java.lang.Iterable[INode] {
-  def size: Int
+object INodeList {
+  val empty: INodeList =
+    EmptyNodeList
 
-  def optIndex(index: Int): Option[INode]
+  def apply(elements: Seq[INode]): INodeList =
+    new NodeList(elements)
 
-  def index(index: Int): INode = optIndex(index).getOrElse(INode.empty)
-
-  def apply(index: Int): INode = optIndex(index).getOrElse(INode.empty)
-
-  def isEmpty: Boolean
-
-  def nonEmpty: Boolean = !isEmpty
+  @inline
+  def fromSeq(children: IterableOnce[_]): INodeList =
+    apply(children.iterator.map(element => INode(element)).toSeq)
 }

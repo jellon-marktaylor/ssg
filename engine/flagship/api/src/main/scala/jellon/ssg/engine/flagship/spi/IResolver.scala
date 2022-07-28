@@ -29,7 +29,7 @@ object IResolver {
     /** call [[resolveIfStringNode(INode)]] on each node in the NodeMap. As a result, each ValueNode(string) will be resolved if it contained a template */
     def resolveStringAttributes(node: INodeMap): INodeMap =
       node.keySet.foldLeft(node)((accumulator, key) =>
-        accumulator.replaceAttribute(key, cur =>
+        accumulator.mergeAttribute(key, cur =>
           resolveIfStringNode(cur)
         )
       )

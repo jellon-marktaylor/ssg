@@ -22,7 +22,7 @@ object DefineNodeProcessor extends AbstractNodeProcessor("define") {
       .foldLeft(INode.empty)((r, nameOfNodeToAddAttributesTo) => {
         val curAttrs: INode = state.attribute(nameOfNodeToAddAttributesTo)
         val newAttrs: INode = defineNode.attribute(nameOfNodeToAddAttributesTo)
-        val mergedNode: INode = mergeNodes(Node(state) ++ r, engine, curAttrs, newAttrs)
+        val mergedNode: INode = mergeNodes(INode(state) ++ r, engine, curAttrs, newAttrs)
         r.setAttribute(nameOfNodeToAddAttributesTo, mergedNode)
       })
 
@@ -48,7 +48,7 @@ object DefineNodeProcessor extends AbstractNodeProcessor("define") {
         val rawNode = value.attribute(key)
         if (accumulator.optAttribute(key).isDefined) {
           val resolvedNode = resolveStringIfStringAttributeNode(state, engine, rawNode)
-          accumulator.replaceAttribute(key, _ => resolvedNode)
+          accumulator.setAttribute(key, resolvedNode)
         } else {
           accumulator.setAttribute(key, rawNode)
         }

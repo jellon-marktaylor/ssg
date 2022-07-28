@@ -60,7 +60,7 @@ object LoopNodeProcessor extends AbstractNodeProcessor("loop") with Logging {
 
   @inline
   private[this] def foreachNode(anyKey: Any, nodeValue: INode): INode =
-    Node(Map[Any, Any](
+    INode(Map[Any, Any](
       "key" -> anyKey,
       "value" -> nodeValue
     ))

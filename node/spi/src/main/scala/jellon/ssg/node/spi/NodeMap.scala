@@ -4,22 +4,21 @@ import jellon.ssg.node.api.{INode, INodeMap}
 
 import scala.collection.immutable.ListMap
 
-final class NodeMap(val elements: Map[Any, INode]) extends INodeMap {
+final class NodeMap(override val elements: Map[AnyRef, INode]) extends INodeMap {
+  def this(kv: (AnyRef, INode)) =
+    this(ListMap(kv))
+
+  def this(key: AnyRef, value: INode) =
+    this(key -> value)
+
   def this(key: Any, value: Any) =
-    this(ListMap[Any, INode](key -> Node(value)))
+    this(key.asInstanceOf[AnyRef] -> INode(value))
 
-  def this(kv: (Any, INode)) =
-    this(ListMap[Any, INode](kv))
+  override def toMap: Map[AnyRef, INode] =
+    elements
 
-  override def keySet: Set[Any] = elements.keySet
-
-  override def optAttribute(key: Any): Option[INode] = elements.get(key)
-
-  override def apply(key: Any): INode = elements.getOrElse(key, INode.empty)
-
-  override def isEmpty: Boolean = elements.isEmpty
-
-  override def nonEmpty: Boolean = elements.nonEmpty
+  override def setAttributes(other: INodeMap): INodeMap =
+    other
 
   override def equals(obj: Any): Boolean = obj match {
     case other: NodeMap =>
@@ -30,4 +29,46 @@ final class NodeMap(val elements: Map[Any, INode]) extends INodeMap {
   }
 
   override def toString: String = s"${elements.map(kv => s"\"${kv._1.toString}\": ${kv._2}").mkString("{ ", ", ", " }")}"
+}
+
+object NodeMap {
+  @inline
+  def apply(elements: Map[AnyRef, INode]): NodeMap =
+    new NodeMap(elements)
+
+  @inline
+  def apply(entries: (_, _)*): NodeMap =
+    new NodeMap(entries
+      .view
+      .map(
+        kv => kv._1.asInstanceOf[AnyRef] -> INode(kv._2)
+      )
+      .to(ListMap)
+    )
+
+  @inline
+  def apply(kv: (AnyRef, INode)): NodeMap =
+    new NodeMap(kv)
+
+  @inline
+  def apply(key: AnyRef, value: INode): NodeMap =
+    new NodeMap(key, value)
+
+  @inline
+  def apply(key: Any, value: Any): NodeMap =
+    new NodeMap(key, value)
+
+  @inline
+  def of(map: Map[_, _]): NodeMap =
+    new NodeMap(map
+      .view
+      .map(
+        kv => kv._1.asInstanceOf[AnyRef] -> INode(kv._2)
+      )
+      .to(ListMap)
+    )
+
+  @inline
+  def of(kv: (_, _)): NodeMap = this
+    .apply(kv._1.asInstanceOf[AnyRef] -> INode(kv._2))
 }

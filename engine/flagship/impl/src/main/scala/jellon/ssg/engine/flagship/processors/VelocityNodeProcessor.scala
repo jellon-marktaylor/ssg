@@ -56,7 +56,7 @@ object VelocityNodeProcessor extends AbstractNodeProcessor("velocity") {
     val resolvedAttributes =
       engine.resolver.resolveStringAttributes(name, state, attributes)
 
-    Node(resolvedAttributes)
+    INode(resolvedAttributes)
   }
 
   private[this] def openOutput(state: INodeMap, properties: INodeMap, resolverName: String, engine: IFlagshipEngine): OutputStream = {
